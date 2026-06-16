@@ -42,7 +42,6 @@
     body.light .dark-toggle:hover { background:#d1d5db; }
     body.light .btn-print { background:#374151; color:white; border:1px solid #4b5563; }
     body.light .btn-print:hover { background:#1f2937; }
-    body.light .custom-input { background:white; border-color:#d1d5db; color:#111; }
     body.light .section-title { color:#4b5563; }
     body.light .result-value { color:#111; }
     body.light .highlight { color:#111; }
@@ -64,6 +63,615 @@
     body.dark .badge { background:#21262d; color:#c9d1d9; border:1px solid #30363d; }
     body.dark .controls-panel, body.dark .results-panel { background:#0d1117; border:1px solid #30363d; }
     body.dark .result-card { background:#161b22; border:1px solid #30363d; }
+    body.dark .total-compare { background:#161b22; border:1px solid #30363d; }
+    body.dark .toggle-btn, body.dark .down-pill { background:#21262d; border-color:#30363d; color:#c9d1d9; }
+    body.dark .toggle-btn.active, body.dark .down-pill.active { background:#f0f6fc; border-color:#f0f6fc; color:#0d1117; }
+    body.dark .dark-toggle { background:#21262d; color:#c9d1d9; border:1px solid #30363d; }
+    body.dark .dark-toggle:hover { background:#30363d; }
+    body.dark .btn-print { background:#374151; color:white; border:1px solid #4b5563; }
+    body.dark .btn-print:hover { background:#4b5563; }
+    body.dark .section-title { color:#8b949e; }
+    body.dark .result-value { color:#e6edf3; }
+    body.dark .highlight { color:#e6edf3; }
+    body.dark .small-note { color:#8b949e; }
+    body.dark input[type=range] { background:#30363d; }
+    body.dark input[type=range]::-webkit-slider-thumb { background:#e6edf3; }
+    body.dark .total-monthly-block { background:#1e293b; border:1px solid #3f4a5a; }
+    body.dark .total-monthly-block .total-monthly-value { color:#f0f6fc; font-weight:700; }
+
+    /* Ersparnis bleibt grün – in Light und Dark */
+    body.light .saving-badge { background:#d4edda; color:#155724; border:1px solid #b7d7b0; }
+    body.dark .saving-badge { background:#0f532d; color:#a7f0ba; border:1px solid #1a7a42; }
+
+    /* Gemeinsame Stile */
+    .calculator-card { max-width:1400px; width:100%; border-radius:2rem; overflow:hidden; transition:all 0.2s; }
+    .card-header { display:flex; justify-content:space-between; align-items:center; padding:1.2rem 2rem; flex-wrap:wrap; gap:1rem; }
+    .brand { display:flex; align-items:center; gap:1rem; flex-wrap:wrap; }
+    .logo-img { height:48px; width:auto; object-fit:contain; transition:filter 0.2s; }
+    .brand h1 { font-size:1.65rem; font-weight:800; letter-spacing:-0.3px; transition:color 0.2s; }
+    .badge { padding:0.4rem 1rem; border-radius:40px; font-size:0.75rem; font-weight:500; display:inline-flex; align-items:center; gap:8px; }
+    .dark-toggle { border:none; border-radius:60px; padding:0.5rem 1rem; font-weight:600; display:flex; align-items:center; gap:10px; cursor:pointer; transition:0.2s; }
+    .btn-print { border:none; border-radius:60px; padding:0.5rem 1rem; font-weight:600; display:inline-flex; align-items:center; gap:8px; cursor:pointer; transition:0.2s; }
+    .content-grid { display:grid; grid-template-columns:1fr 1.2fr; gap:2rem; padding:2rem; }
+    @media (max-width:850px) { .content-grid { grid-template-columns:1fr; gap:1.5rem; padding:1.5rem; } .card-header { padding:1rem 1.5rem; } }
+    .controls-panel, .results-panel { border-radius:1.5rem; padding:1.4rem; transition:all 0.2s; }
+    .section-title { font-weight:600; font-size:0.9rem; text-transform:uppercase; letter-spacing:0.5px; margin-bottom:1rem; display:flex; align-items:center; gap:8px; }
+    .toggle-group { display:flex; gap:12px; margin-bottom:1.5rem; flex-wrap:wrap; }
+    .toggle-btn { flex:1; border:1px solid; padding:0.7rem 0; border-radius:60px; font-weight:600; cursor:pointer; text-align:center; display:flex; align-items:center; justify-content:center; gap:8px; transition:0.2s; }
+    .downpayment-options { display:flex; gap:0.8rem; margin:1rem 0 1rem 0; flex-wrap:wrap; }
+    .down-pill { flex:1; min-width:90px; border:1px solid; border-radius:1rem; padding:0.7rem 0.2rem; text-align:center; cursor:pointer; transition:0.2s; }
+    .down-amount { font-size:1.2rem; font-weight:800; }
+    .slider-section { margin-top:1.2rem; }
+    .slider-label { display:flex; justify-content:space-between; font-size:0.8rem; margin-bottom:6px; }
+    input[type=range] { width:100%; height:5px; -webkit-appearance:none; border-radius:5px; outline:none; }
+    .result-card { border-radius:1.2rem; padding:1.2rem; margin-bottom:1.4rem; }
+    .result-row { display:flex; justify-content:space-between; align-items:baseline; padding:0.7rem 0; border-bottom:1px dashed #d1d5db; }
+    body.dark .result-row { border-bottom-color:#30363d; }
+    .result-value { font-weight:800; font-size:1.7rem; letter-spacing:-0.02em; }
+    .saving-badge { padding:0.3rem 0.8rem; border-radius:2rem; font-size:0.75rem; font-weight:600; margin-top:0.5rem; display:inline-block; }
+    .tooltip-icon { cursor:help; margin-left:5px; font-size:0.8rem; opacity:0.7; border-bottom:1px dotted; }
+    .print-summary { display:none; }
+
+    .total-monthly-block {
+      margin-top:1rem;
+      border-radius:1rem;
+      padding:0.8rem;
+      transition:background 0.2s, border 0.2s;
+    }
+    .total-monthly-block .flex-between {
+      display:flex;
+      justify-content:space-between;
+    }
+
+    /* Slider für Stückzahl */
+    .qty-slider-wrapper {
+      margin: 0.5rem 0 1rem 0;
+    }
+    .qty-slider-wrapper .slider-label {
+      display: flex;
+      justify-content: space-between;
+      font-weight: 500;
+    }
+    .qty-slider-wrapper .slider-label span:first-child {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .qty-slider-wrapper .slider-label .qty-badge {
+      background: #1f2937;
+      color: white;
+      padding: 0.1rem 0.6rem;
+      border-radius: 2rem;
+      font-size: 0.7rem;
+    }
+    body.dark .qty-slider-wrapper .slider-label .qty-badge {
+      background: #e6edf3;
+      color: #0d1117;
+    }
+
+    /* Druck-CSS erzwingt immer Light-Mode und zeigt nur die Zusammenfassung */
+    @media print {
+      body { background:white !important; color:black !important; }
+      body, body * { background-color:white !important; color:black !important; border-color:#ccc !important; }
+      .dark-toggle, .btn-print, .toggle-group .toggle-btn, .down-pill, .slider-section, .controls-panel .section-title:first-child,
+      .result-card, .total-compare, .total-monthly-block, .qty-slider-wrapper, .controls-panel { display:none !important; }
+      .results-panel { border:none !important; background:white !important; box-shadow:none !important; padding:0 !important; }
+      .calculator-card { max-width:100%; box-shadow:none; border:none; }
+      .brand h1 { color:black !important; }
+      .print-summary {
+        display:block !important;
+        margin:2rem auto;
+        font-size:1.1rem;
+        text-align:center;
+        padding:1.5rem;
+        border:1px solid #aaa;
+        border-radius:1rem;
+        background:white !important;
+        max-width:600px;
+      }
+      .print-summary .title { font-size:1.4rem; font-weight:700; margin-bottom:0.8rem; }
+      .print-summary .detail { margin:0.3rem 0; }
+      .print-summary .total { font-size:1.6rem; font-weight:800; margin-top:0.8rem; border-top:2px solid #333; padding-top:0.6rem; }
+      .card-header { border-bottom:1px solid #ccc; }
+      .brand .badge { display:none !important; }
+    }
+  </style>
+</head>
+<body class="light">
+<div class="calculator-card" id="financeCard">
+  <div class="card-header">
+    <div class="brand">
+      <div class="logo-area">
+        <img src="octos-logo.png" alt="OctoStool Logo" class="logo-img" onerror="this.src='https://placehold.co/48x48?text=Octo'; this.onerror=null;">
+        <h1>OctoStool Finanzierung</h1>
+      </div>
+      <!-- Badge "Pro Modus" entfernt -->
+    </div>
+    <div style="display:flex; gap:10px;">
+      <button id="printPdfBtn" class="btn-print"><i class="fas fa-file-pdf"></i> PDF / Drucken</button>
+      <button id="darkModeBtn" class="dark-toggle"><i class="fas fa-moon"></i> Dark mode</button>
+    </div>
+  </div>
+
+  <div class="content-grid">
+    <!-- Linke Seite: Steuerung -->
+    <div class="controls-panel">
+      <div class="section-title"><i class="fas fa-sliders-h"></i> Vertragskonfiguration</div>
+      
+      <div class="toggle-group">
+        <div id="term12Btn" class="toggle-btn active"><i class="far fa-calendar-alt"></i> 12 Monate</div>
+        <div id="term24Btn" class="toggle-btn"><i class="far fa-calendar-check"></i> 24 Monate</div>
+      </div>
+
+      <div class="toggle-group">
+        <div id="priceNetBtn" class="toggle-btn active"><i class="fas fa-tag"></i> Nettopreis <span class="tooltip-icon" title="Preis ohne Mehrwertsteuer. Zzgl. MwSt.">ⓘ</span></div>
+        <div id="priceGrossBtn" class="toggle-btn"><i class="fas fa-receipt"></i> Bruttopreis <span class="tooltip-icon" title="Preis inklusive Mehrwertsteuer (20% Beispiel)">ⓘ</span></div>
+      </div>
+
+      <div class="toggle-group">
+        <div id="finalIncludeBtn" class="toggle-btn active"><i class="fas fa-flag-checkered"></i> Mit Schlussrate</div>
+        <div id="finalExcludeBtn" class="toggle-btn"><i class="fas fa-ban"></i> Ohne Schlussrate</div>
+      </div>
+
+      <!-- Produktanzahl mit Slider -->
+      <div class="section-title" style="margin-top:0.5rem;"><i class="fas fa-cubes"></i> Anzahl Produkte & Rabatt</div>
+      <div class="qty-slider-wrapper">
+        <div class="slider-label">
+          <span><i class="fas fa-box"></i> Stückzahl: <strong id="qtyDisplay">1</strong></span>
+          <span class="qty-badge" id="qtyDiscountDisplay">0% Rabatt</span>
+        </div>
+        <input type="range" id="qtySlider" min="1" max="4" step="1" value="1">
+        <div style="display:flex; justify-content:space-between; font-size:0.7rem; color:#6b7280; padding:0 4px;">
+          <span>1</span><span>2</span><span>3</span><span>4</span>
+        </div>
+      </div>
+
+      <div class="section-title" style="margin-top:0.5rem;"><i class="fas fa-hand-holding-usd"></i> Anzahlung pro Stück (mind. 100€)</div>
+      <div class="downpayment-options" id="downpaymentContainer"></div>
+
+      <div class="slider-section">
+        <div class="slider-label"><span><i class="fas fa-sliders-h"></i> Anzahlung pro Stück</span><span id="sliderValueLabel">€100</span></div>
+        <input type="range" id="downSlider" min="100" max="800" step="10" value="100">
+      </div>
+      <!-- Händische Eingabe entfernt -->
+    </div>
+
+    <!-- Rechte Seite: Ergebnisse -->
+    <div class="results-panel" id="resultsPanel">
+      <div class="section-title"><i class="fas fa-chart-line"></i> Finanzielle Übersicht</div>
+      
+      <!-- Druck-Zusammenfassung (nur im Print sichtbar) -->
+      <div class="print-summary">
+        <div class="title">OctoStool Finanzierung</div>
+        <div class="detail">Laufzeit: <span id="printTerm">12</span> Monate</div>
+        <div class="detail">Preisbasis: <span id="printPriceType">Netto</span></div>
+        <div class="detail">Schlussrate: <span id="printFinalMode">ja</span></div>
+        <div class="detail">Anzahlung pro Stück: <span id="printDown">100</span> €</div>
+        <div class="detail">Anzahl Produkte: <span id="printQty">1</span> Stück</div>
+        <div class="detail">Mengenrabatt: <span id="printDiscount">0</span>%</div>
+        <hr style="margin:0.5rem 0;">
+        <div class="detail"><strong>Anzahlung gesamt:</strong> <span id="printDownTotal">100</span> €</div>
+        <div class="detail"><strong>Monatliche Rate:</strong> <span id="printMonthly">0</span> €</div>
+        <div class="detail"><strong>Schlussrate gesamt:</strong> <span id="printFinalTotal">0</span> €</div>
+        <div class="total">Gesamtbetrag: <span id="printTotal">0</span> €</div>
+      </div>
+
+      <!-- Normale Ansicht (nicht im Druck) -->
+      <div class="result-card">
+        <div class="result-row">
+          <span class="result-label"><i class="fas fa-arrow-down"></i> Anzahlung (gesamt)</span>
+          <span class="result-value" id="downDisplay">€100</span>
+        </div>
+        <div class="result-row">
+          <span class="result-label"><i class="fas fa-calendar-week"></i> Monatliche Rate</span>
+          <span class="result-value" id="monthlyDisplay">€0</span>
+        </div>
+        <div class="result-row" id="finalRow">
+          <span class="result-label"><i class="fas fa-flag-checkered"></i> Schlussrate (gesamt)</span>
+          <span class="result-value" id="finalDisplay">€0</span>
+        </div>
+        <div class="result-row">
+          <span class="result-label"><i class="fas fa-cubes"></i> Mengenrabatt</span>
+          <span class="result-value" id="discountDisplay">0%</span>
+        </div>
+      </div>
+
+      <div class="total-compare">
+        <div class="flex-between" style="margin-bottom:12px;">
+          <span><i class="fas fa-file-invoice-dollar"></i> <strong>Gesamtbetrag</strong> (alle Zahlungen)</span>
+          <span class="highlight" id="calculatedTotal" style="font-size:1.6rem; font-weight:800;">€0</span>
+        </div>
+        <div id="savingMessage" class="saving-badge" style="display:none;">💰 Sparpotenzial: €X</div>
+        <div class="small-note" style="margin-top:8px;" id="officialHint">
+          <i class="fas fa-chart-line"></i> flexible Finanzierung
+        </div>
+      </div>
+
+      <div class="total-monthly-block">
+        <div class="flex-between">
+          <span><i class="fas fa-chart-simple"></i> <strong>Gesamte Ratenzahlungen</strong></span>
+          <span class="total-monthly-value" id="totalMonthlySum" style="font-weight:700;">€0</span>
+        </div>
+        <div class="flex-between" style="margin-top:8px;">
+          <span><i class="fas fa-euro-sign"></i> Effektive Gesamtkosten</span>
+          <span id="effectiveTotal" style="font-weight:800;">€0</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  // ---------- REFERENZDATEN (für 1 Stück) ----------
+  const REF_DATA = {
+    net12: { down: [0, 200, 400], monthly: [113, 88, 63], final: 450, totals: [1800, 1700, 1600] },
+    gross12: { down: [0, 240, 480], monthly: [135, 113, 83], final: 540, totals: [2160, 2040, 1920] },
+    net24: { down: [0, 200, 400], monthly: [65, 52, 40], final: 450, totals: [2000, 1900, 1800] },
+    gross24: { down: [0, 240, 480], monthly: [81, 66, 51], final: 540, totals: [2400, 2280, 2160] }
+  };
+
+  // Zustand
+  let currentTerm = 12;
+  let currentPriceType = 'net';
+  let currentDownAmount = 100;   // Anzahlung pro Stück (mind. 100)
+  let includeFinal = true;
+  let currentQty = 1;            // 1,2,3,4
+
+  // Rabattfunktion
+  function getDiscount(qty) {
+    if (qty === 1) return 0;
+    if (qty === 2) return 0.10;
+    if (qty === 3) return 0.15;
+    if (qty === 4) return 0.20;
+    return 0;
+  }
+
+  // DOM-Referenzen
+  const downDisplay = document.getElementById('downDisplay');
+  const monthlyDisplay = document.getElementById('monthlyDisplay');
+  const finalDisplaySpan = document.getElementById('finalDisplay');
+  const discountDisplay = document.getElementById('discountDisplay');
+  const calculatedTotalSpan = document.getElementById('calculatedTotal');
+  const totalMonthlySumSpan = document.getElementById('totalMonthlySum');
+  const effectiveTotalSpan = document.getElementById('effectiveTotal');
+  const downSlider = document.getElementById('downSlider');
+  const sliderLabel = document.getElementById('sliderValueLabel');
+  const savingMessageDiv = document.getElementById('savingMessage');
+  const officialHintSpan = document.getElementById('officialHint');
+  const finalRow = document.getElementById('finalRow');
+  // Druck-Elemente
+  const printTerm = document.getElementById('printTerm');
+  const printPriceType = document.getElementById('printPriceType');
+  const printFinalMode = document.getElementById('printFinalMode');
+  const printDown = document.getElementById('printDown');
+  const printQty = document.getElementById('printQty');
+  const printDiscount = document.getElementById('printDiscount');
+  const printDownTotal = document.getElementById('printDownTotal');
+  const printMonthly = document.getElementById('printMonthly');
+  const printFinalTotal = document.getElementById('printFinalTotal');
+  const printTotal = document.getElementById('printTotal');
+
+  // Slider für Stückzahl
+  const qtySlider = document.getElementById('qtySlider');
+  const qtyDisplay = document.getElementById('qtyDisplay');
+  const qtyDiscountDisplay = document.getElementById('qtyDiscountDisplay');
+
+  // Hilfsfunktionen
+  function getDataset() {
+    if (currentTerm === 12 && currentPriceType === 'net') return REF_DATA.net12;
+    if (currentTerm === 12 && currentPriceType === 'gross') return REF_DATA.gross12;
+    if (currentTerm === 24 && currentPriceType === 'net') return REF_DATA.net24;
+    return REF_DATA.gross24;
+  }
+
+  function computeMonthlyFromDown(downAmount) {
+    const dataset = getDataset();
+    const downPoints = dataset.down;
+    const monthlyPoints = dataset.monthly;
+    let down = Math.max(0, downAmount);
+    if (down <= downPoints[0]) return monthlyPoints[0];
+    if (down >= downPoints[downPoints.length - 1]) {
+      const last = downPoints.length - 1;
+      const slope = (monthlyPoints[last] - monthlyPoints[last-1]) / (downPoints[last] - downPoints[last-1]);
+      return Math.max(0, monthlyPoints[last] + slope * (down - downPoints[last]));
+    }
+    for (let i = 0; i < downPoints.length - 1; i++) {
+      if (down >= downPoints[i] && down <= downPoints[i+1]) {
+        const t = (down - downPoints[i]) / (downPoints[i+1] - downPoints[i]);
+        return monthlyPoints[i] + t * (monthlyPoints[i+1] - monthlyPoints[i]);
+      }
+    }
+    return monthlyPoints[0];
+  }
+
+  function getFinalOriginal() { return getDataset().final; }
+
+  function interpolateTotalPrice(downAmount) {
+    const dataset = getDataset();
+    const downPoints = dataset.down;
+    const totalPoints = dataset.totals;
+    let down = Math.max(0, downAmount);
+    if (down <= downPoints[0]) return totalPoints[0];
+    if (down >= downPoints[downPoints.length - 1]) {
+      const last = downPoints.length - 1;
+      const slope = (totalPoints[last] - totalPoints[last-1]) / (downPoints[last] - downPoints[last-1]);
+      return totalPoints[last] + slope * (down - downPoints[last]);
+    }
+    for (let i = 0; i < downPoints.length - 1; i++) {
+      if (down >= downPoints[i] && down <= downPoints[i+1]) {
+        const t = (down - downPoints[i]) / (downPoints[i+1] - downPoints[i]);
+        return totalPoints[i] + t * (totalPoints[i+1] - totalPoints[i]);
+      }
+    }
+    return totalPoints[0];
+  }
+
+  function computePlan() {
+    const qty = currentQty;
+    const discount = getDiscount(qty);
+    const basePricePerUnit = interpolateTotalPrice(currentDownAmount);
+    const baseFinalPerUnit = getFinalOriginal();
+    const baseMonthlyPerUnit = computeMonthlyFromDown(currentDownAmount);
+
+    const totalBasePrice = basePricePerUnit * qty;
+    const discountedTotal = totalBasePrice * (1 - discount);
+    const totalDown = currentDownAmount * qty;
+    const totalFinal = baseFinalPerUnit * qty;
+
+    let monthlyFinal, finalAmount, totalCost, totalMonthlySum;
+    if (includeFinal) {
+      const remaining = discountedTotal - totalDown - totalFinal;
+      if (remaining < 0) {
+        monthlyFinal = 0;
+        finalAmount = totalFinal;
+        totalCost = totalDown + totalFinal;
+        totalMonthlySum = 0;
+      } else {
+        monthlyFinal = remaining / currentTerm;
+        finalAmount = totalFinal;
+        totalCost = totalDown + monthlyFinal * currentTerm + finalAmount;
+        totalMonthlySum = monthlyFinal * currentTerm;
+      }
+    } else {
+      const remaining = discountedTotal - totalDown;
+      if (remaining < 0) {
+        monthlyFinal = 0;
+        finalAmount = 0;
+        totalCost = totalDown;
+        totalMonthlySum = 0;
+      } else {
+        monthlyFinal = remaining / currentTerm;
+        finalAmount = 0;
+        totalCost = totalDown + monthlyFinal * currentTerm;
+        totalMonthlySum = monthlyFinal * currentTerm;
+      }
+    }
+    return { monthly: monthlyFinal, final: finalAmount, totalCost, totalMonthlySum, discount, discountedTotal, totalDown, totalFinal };
+  }
+
+  function computeSavings() {
+    const oldDown = currentDownAmount;
+    currentDownAmount = 100;
+    const plan100 = computePlan();
+    currentDownAmount = oldDown;
+    const currentTotal = computePlan().totalCost;
+    return Math.max(0, plan100.totalCost - currentTotal);
+  }
+
+  function refreshAll() {
+    const plan = computePlan();
+    const monthly = plan.monthly;
+    const finalVal = plan.final;
+    const totalCost = plan.totalCost;
+    const totalMonthly = plan.totalMonthlySum;
+    const discountPercent = (plan.discount * 100).toFixed(0);
+    const totalDown = plan.totalDown;
+    const totalFinal = plan.totalFinal;
+
+    downDisplay.innerHTML = `€${totalDown.toLocaleString(undefined, {minimumFractionDigits:2, maximumFractionDigits:2})}`;
+    monthlyDisplay.innerHTML = `€${monthly.toLocaleString(undefined, {minimumFractionDigits:2, maximumFractionDigits:2})}`;
+    finalDisplaySpan.innerHTML = includeFinal ? `€${finalVal.toLocaleString(undefined, {minimumFractionDigits:2})}` : `€0 (entfällt)`;
+    discountDisplay.innerHTML = discountPercent + '%';
+    calculatedTotalSpan.innerHTML = `€${totalCost.toLocaleString(undefined, {minimumFractionDigits:2})}`;
+    totalMonthlySumSpan.innerHTML = `€${totalMonthly.toLocaleString(undefined, {minimumFractionDigits:2})}`;
+    effectiveTotalSpan.innerHTML = `€${totalCost.toLocaleString(undefined, {minimumFractionDigits:2})}`;
+
+    // Ersparnis
+    const saved = computeSavings();
+    if (saved > 0.5 && currentDownAmount > 100) {
+      savingMessageDiv.style.display = 'block';
+      savingMessageDiv.innerHTML = `<i class="fas fa-piggy-bank"></i> Sparpotenzial: €${saved.toFixed(2)}`;
+    } else {
+      savingMessageDiv.style.display = 'none';
+    }
+
+    // Offizieller Hinweis
+    const dataset = getDataset();
+    let isPreset = false;
+    for (let d of dataset.down) {
+      if (Math.abs(d - currentDownAmount) < 0.1) isPreset = true;
+    }
+    if (isPreset && includeFinal) {
+      let officialTotal = interpolateTotalPrice(currentDownAmount) * currentQty * (1 - getDiscount(currentQty));
+      officialHintSpan.innerHTML = `<i class="fas fa-check-circle"></i> Offizieller Vertragspreis (mit Mengenrabatt): €${officialTotal.toFixed(2)}`;
+    } else if (!includeFinal) {
+      officialHintSpan.innerHTML = `<i class="fas fa-chart-line"></i> Volltilgung ohne Schlussrate – individuelle Monatsrate.`;
+    } else {
+      officialHintSpan.innerHTML = `<i class="fas fa-chart-line"></i> Individuelle Finanzierung – flexibel anpassbar.`;
+    }
+
+    updatePresetActiveState();
+    // Slider sync
+    if (document.activeElement !== downSlider) downSlider.value = currentDownAmount;
+    sliderLabel.innerText = `€${currentDownAmount}`;
+    finalRow.style.opacity = includeFinal ? '1' : '0.6';
+
+    // Druck-Infos
+    printTerm.textContent = currentTerm;
+    printPriceType.textContent = currentPriceType === 'net' ? 'Netto' : 'Brutto';
+    printFinalMode.textContent = includeFinal ? 'ja' : 'nein (vollgetilgt)';
+    printDown.textContent = currentDownAmount.toFixed(0);
+    printQty.textContent = currentQty;
+    printDiscount.textContent = discountPercent;
+    printDownTotal.textContent = totalDown.toFixed(2);
+    printMonthly.textContent = monthly.toFixed(2);
+    printFinalTotal.textContent = totalFinal.toFixed(2);
+    printTotal.textContent = totalCost.toFixed(2);
+
+    // Stückzahl-Slider
+    qtyDisplay.textContent = currentQty;
+    const disc = getDiscount(currentQty);
+    qtyDiscountDisplay.textContent = (disc * 100).toFixed(0) + '% Rabatt';
+  }
+
+  function updatePresetActiveState() {
+    const dataset = getDataset();
+    const pills = document.querySelectorAll('.down-pill');
+    pills.forEach(pill => {
+      const val = parseFloat(pill.getAttribute('data-value'));
+      pill.classList.toggle('active', Math.abs(val - currentDownAmount) < 0.5);
+    });
+  }
+
+  function rebuildDownPills() {
+    const container = document.getElementById('downpaymentContainer');
+    const presetValues = [100, 200, 400];
+    const containerHTML = presetValues.map(val => {
+      const monthly = computeMonthlyFromDown(val);
+      let label = val === 100 ? 'mind. Anzahlung' : (val === 200 ? 'mittlere' : 'maximale');
+      const activeClass = Math.abs(val - currentDownAmount) < 0.5 ? 'active' : '';
+      return `<div class="down-pill ${activeClass}" data-value="${val}">
+        <div class="down-amount">€${val}</div>
+        <div class="down-label">${label}</div>
+        <div class="small-note" style="font-size:0.6rem;">Rate/Stk: €${monthly.toFixed(0)}</div>
+      </div>`;
+    }).join('');
+    container.innerHTML = containerHTML;
+    container.querySelectorAll('.down-pill').forEach(pill => {
+      pill.addEventListener('click', () => {
+        const val = parseFloat(pill.getAttribute('data-value'));
+        currentDownAmount = val;
+        syncDownInputs();
+        refreshAll();
+        saveToLocalStorage();
+      });
+    });
+  }
+
+  function syncDownInputs() {
+    downSlider.value = currentDownAmount;
+    sliderLabel.innerText = `€${currentDownAmount}`;
+  }
+
+  function onPlanStructureChange() {
+    rebuildDownPills();
+    if (currentDownAmount < 100) currentDownAmount = 100;
+    if (currentDownAmount > 800) currentDownAmount = 800;
+    syncDownInputs();
+    refreshAll();
+    // Toggle Klassen
+    document.getElementById('term12Btn').classList.toggle('active', currentTerm === 12);
+    document.getElementById('term24Btn').classList.toggle('active', currentTerm === 24);
+    document.getElementById('priceNetBtn').classList.toggle('active', currentPriceType === 'net');
+    document.getElementById('priceGrossBtn').classList.toggle('active', currentPriceType === 'gross');
+    document.getElementById('finalIncludeBtn').classList.toggle('active', includeFinal === true);
+    document.getElementById('finalExcludeBtn').classList.toggle('active', includeFinal === false);
+  }
+
+  // Event-Listener
+  function initUI() {
+    document.getElementById('term12Btn').onclick = () => { if (currentTerm !== 12) { currentTerm = 12; onPlanStructureChange(); saveToLocalStorage(); } };
+    document.getElementById('term24Btn').onclick = () => { if (currentTerm !== 24) { currentTerm = 24; onPlanStructureChange(); saveToLocalStorage(); } };
+    document.getElementById('priceNetBtn').onclick = () => { if (currentPriceType !== 'net') { currentPriceType = 'net'; onPlanStructureChange(); saveToLocalStorage(); } };
+    document.getElementById('priceGrossBtn').onclick = () => { if (currentPriceType !== 'gross') { currentPriceType = 'gross'; onPlanStructureChange(); saveToLocalStorage(); } };
+    document.getElementById('finalIncludeBtn').onclick = () => { if (!includeFinal) { includeFinal = true; onPlanStructureChange(); saveToLocalStorage(); } };
+    document.getElementById('finalExcludeBtn').onclick = () => { if (includeFinal) { includeFinal = false; onPlanStructureChange(); saveToLocalStorage(); } };
+
+    qtySlider.addEventListener('input', (e) => {
+      const val = parseInt(e.target.value);
+      if (val !== currentQty) {
+        currentQty = val;
+        refreshAll();
+        saveToLocalStorage();
+      }
+    });
+
+    downSlider.addEventListener('input', (e) => {
+      let v = parseFloat(e.target.value);
+      currentDownAmount = v;
+      syncDownInputs();
+      refreshAll();
+      saveToLocalStorage();
+    });
+
+    document.getElementById('printPdfBtn').addEventListener('click', () => window.print());
+  }
+
+  // LocalStorage
+  function saveToLocalStorage() {
+    localStorage.setItem('octo_finance_state', JSON.stringify({
+      term: currentTerm,
+      priceType: currentPriceType,
+      downAmount: currentDownAmount,
+      includeFinal: includeFinal,
+      qty: currentQty
+    }));
+  }
+
+  function loadFromLocalStorage() {
+    const saved = localStorage.getItem('octo_finance_state');
+    if (saved) {
+      try {
+        const s = JSON.parse(saved);
+        if (s.term === 12 || s.term === 24) currentTerm = s.term;
+        if (s.priceType === 'net' || s.priceType === 'gross') currentPriceType = s.priceType;
+        if (typeof s.downAmount === 'number') currentDownAmount = Math.min(800, Math.max(100, s.downAmount));
+        if (typeof s.includeFinal === 'boolean') includeFinal = s.includeFinal;
+        if (s.qty && [1,2,3,4].includes(s.qty)) currentQty = s.qty;
+      } catch(e) {}
+    }
+    syncDownInputs();
+    rebuildDownPills();
+    refreshAll();
+    onPlanStructureChange();
+    qtySlider.value = currentQty;
+  }
+
+  // Dark Mode
+  function initDarkMode() {
+    const btn = document.getElementById('darkModeBtn');
+    const body = document.body;
+    const saved = localStorage.getItem('octo_theme');
+    if (saved === 'dark') {
+      body.classList.remove('light'); body.classList.add('dark');
+      btn.innerHTML = '<i class="fas fa-sun"></i> Light mode';
+    } else {
+      body.classList.add('light'); body.classList.remove('dark');
+      btn.innerHTML = '<i class="fas fa-moon"></i> Dark mode';
+    }
+    btn.addEventListener('click', () => {
+      const isDark = body.classList.contains('dark');
+      if (isDark) {
+        body.classList.remove('dark'); body.classList.add('light');
+        localStorage.setItem('octo_theme', 'light');
+        btn.innerHTML = '<i class="fas fa-moon"></i> Dark mode';
+      } else {
+        body.classList.remove('light'); body.classList.add('dark');
+        localStorage.setItem('octo_theme', 'dark');
+        btn.innerHTML = '<i class="fas fa-sun"></i> Light mode';
+      }
+    });
+  }
+
+  function init() {
+    initDarkMode();
+    initUI();
+    loadFromLocalStorage();
+  }
+  init();
+</script>
+</body>
+</html>    body.dark .result-card { background:#161b22; border:1px solid #30363d; }
     body.dark .total-compare { background:#161b22; border:1px solid #30363d; }
     body.dark .toggle-btn, body.dark .down-pill { background:#21262d; border-color:#30363d; color:#c9d1d9; }
     body.dark .toggle-btn.active, body.dark .down-pill.active { background:#f0f6fc; border-color:#f0f6fc; color:#0d1117; }
