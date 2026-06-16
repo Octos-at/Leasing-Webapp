@@ -49,7 +49,7 @@
     body.light .small-note { color:#6b7280; }
     body.light input[type=range] { background:#d1d5db; }
     body.light input[type=range]::-webkit-slider-thumb { background:#374151; }
-    body.light .total-monthly-block { background:#f0f0f0; } /* für besseren Kontrast */
+    body.light .total-monthly-block { background:#f0f0f0; }
     body.light .total-monthly-block .total-monthly-value { color:#111; }
 
     /* Dark Mode – komplett schwarz/weiß/grau */
@@ -78,7 +78,6 @@
     body.dark .small-note { color:#8b949e; }
     body.dark input[type=range] { background:#30363d; }
     body.dark input[type=range]::-webkit-slider-thumb { background:#e6edf3; }
-    /* Bessere Sichtbarkeit für "Gesamte Ratenzahlungen" im Dark Mode */
     body.dark .total-monthly-block { background:#1e293b; border:1px solid #3f4a5a; }
     body.dark .total-monthly-block .total-monthly-value { color:#f0f6fc; font-weight:700; }
 
@@ -118,7 +117,6 @@
     .tooltip-icon { cursor:help; margin-left:5px; font-size:0.8rem; opacity:0.7; border-bottom:1px dotted; }
     .print-summary { display:none; }
 
-    /* Block für "Gesamte Ratenzahlungen" – besser kontrastiert */
     .total-monthly-block {
       margin-top:1rem;
       border-radius:1rem;
@@ -130,7 +128,33 @@
       justify-content:space-between;
     }
 
-    /* Druck-CSS: Erzwingt immer Light-Mode */
+    /* Neuer Slider für Stückzahl */
+    .qty-slider-wrapper {
+      margin: 0.5rem 0 1rem 0;
+    }
+    .qty-slider-wrapper .slider-label {
+      display: flex;
+      justify-content: space-between;
+      font-weight: 500;
+    }
+    .qty-slider-wrapper .slider-label span:first-child {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .qty-slider-wrapper .slider-label .qty-badge {
+      background: #1f2937;
+      color: white;
+      padding: 0.1rem 0.6rem;
+      border-radius: 2rem;
+      font-size: 0.7rem;
+    }
+    body.dark .qty-slider-wrapper .slider-label .qty-badge {
+      background: #e6edf3;
+      color: #0d1117;
+    }
+
+    /* Druck-CSS erzwingt immer Light-Mode */
     @media print {
       body { background:white !important; color:black !important; }
       body, body * { background-color:white !important; color:black !important; border-color:#ccc !important; }
@@ -143,6 +167,7 @@
       .print-summary span { font-weight:600; }
       .total-monthly-block { background:white !important; border:1px solid #ccc !important; }
       .total-monthly-block .total-monthly-value { color:black !important; }
+      .qty-slider-wrapper { display:none !important; }
     }
   </style>
 </head>
@@ -151,7 +176,6 @@
   <div class="card-header">
     <div class="brand">
       <div class="logo-area">
-        <!-- Header-Logo bleibt octos-logo.png (unverändert) -->
         <img src="octos-logo.png" alt="OctoStool Logo" class="logo-img" onerror="this.src='https://placehold.co/48x48?text=Octo'; this.onerror=null;">
         <h1>OctoStool Finanzierung</h1>
       </div>
@@ -183,25 +207,29 @@
         <div id="finalExcludeBtn" class="toggle-btn"><i class="fas fa-ban"></i> Ohne Schlussrate</div>
       </div>
 
-      <!-- Produktanzahl mit Rabatt -->
-      <div class="section-title" style="margin-top:0.5rem;"><i class="fas fa-cubes"></i> Produktanzahl (Rabatt)</div>
-      <div class="toggle-group" id="qtyGroup">
-        <div class="toggle-btn qty-btn active" data-qty="1">1 Stück (0%)</div>
-        <div class="toggle-btn qty-btn" data-qty="2">2 Stück (-10%)</div>
-        <div class="toggle-btn qty-btn" data-qty="3">3 Stück (-15%)</div>
-        <div class="toggle-btn qty-btn" data-qty="4">4 Stück (-20%)</div>
+      <!-- Produktanzahl mit Slider -->
+      <div class="section-title" style="margin-top:0.5rem;"><i class="fas fa-cubes"></i> Anzahl Produkte & Rabatt</div>
+      <div class="qty-slider-wrapper">
+        <div class="slider-label">
+          <span><i class="fas fa-box"></i> Stückzahl: <strong id="qtyDisplay">1</strong></span>
+          <span class="qty-badge" id="qtyDiscountDisplay">0% Rabatt</span>
+        </div>
+        <input type="range" id="qtySlider" min="1" max="4" step="1" value="1">
+        <div style="display:flex; justify-content:space-between; font-size:0.7rem; color:#6b7280; padding:0 4px;">
+          <span>1</span><span>2</span><span>3</span><span>4</span>
+        </div>
       </div>
 
-      <div class="section-title" style="margin-top:0.5rem;"><i class="fas fa-hand-holding-usd"></i> Anzahlung (Schnellauswahl)</div>
+      <div class="section-title" style="margin-top:0.5rem;"><i class="fas fa-hand-holding-usd"></i> Anzahlung pro Stück (mind. 100€)</div>
       <div class="downpayment-options" id="downpaymentContainer"></div>
 
       <div class="slider-section">
-        <div class="slider-label"><span><i class="fas fa-sliders-h"></i> Anzahlung per Schieberegler (mind. 100€)</span><span id="sliderValueLabel">€100</span></div>
+        <div class="slider-label"><span><i class="fas fa-sliders-h"></i> Anzahlung pro Stück</span><span id="sliderValueLabel">€100</span></div>
         <input type="range" id="downSlider" min="100" max="800" step="10" value="100">
       </div>
 
       <div class="custom-down-section">
-        <div class="custom-label"><i class="fas fa-pen-alt"></i> Eigene Anzahlung (€, mind. 100)</div>
+        <div class="custom-label"><i class="fas fa-pen-alt"></i> Eigene Anzahlung pro Stück (€, mind. 100)</div>
         <div class="custom-input-wrapper">
           <input type="number" id="customDownInput" class="custom-input" placeholder="100" value="100" step="10" min="100">
         </div>
@@ -217,13 +245,14 @@
         <strong>OctoStool Finanzierung</strong> – Laufzeit: <span id="printTerm">12</span> Monate,
         Preisbasis: <span id="printPriceType">Netto</span>,
         Schlussrate: <span id="printFinalMode">ja</span>,
-        Anzahlung: <span id="printDown">100</span> €,
-        Anzahl Produkte: <span id="printQty">1</span> Stück
+        Anzahlung pro Stück: <span id="printDown">100</span> €,
+        Anzahl Produkte: <span id="printQty">1</span> Stück,
+        Mengenrabatt: <span id="printDiscount">0</span>%
       </div>
 
       <div class="result-card">
         <div class="result-row">
-          <span class="result-label"><i class="fas fa-arrow-down"></i> Anzahlung</span>
+          <span class="result-label"><i class="fas fa-arrow-down"></i> Anzahlung (gesamt)</span>
           <span class="result-value" id="downDisplay">€100</span>
         </div>
         <div class="result-row">
@@ -231,11 +260,11 @@
           <span class="result-value" id="monthlyDisplay">€0</span>
         </div>
         <div class="result-row" id="finalRow">
-          <span class="result-label"><i class="fas fa-flag-checkered"></i> Schlussrate (Kaufoption)</span>
+          <span class="result-label"><i class="fas fa-flag-checkered"></i> Schlussrate (gesamt)</span>
           <span class="result-value" id="finalDisplay">€0</span>
         </div>
         <div class="result-row">
-          <span class="result-label"><i class="fas fa-cubes"></i> Rabatt (Menge)</span>
+          <span class="result-label"><i class="fas fa-cubes"></i> Mengenrabatt</span>
           <span class="result-value" id="discountDisplay">0%</span>
         </div>
       </div>
@@ -251,7 +280,6 @@
         </div>
       </div>
 
-      <!-- Block für "Gesamte Ratenzahlungen" – jetzt mit besserem Kontrast -->
       <div class="total-monthly-block">
         <div class="flex-between">
           <span><i class="fas fa-chart-simple"></i> <strong>Gesamte Ratenzahlungen</strong></span>
@@ -267,7 +295,7 @@
 </div>
 
 <script>
-  // ---------- REFERENZDATEN (unverändert) ----------
+  // ---------- REFERENZDATEN (für 1 Stück) ----------
   const REF_DATA = {
     net12: { down: [0, 200, 400], monthly: [113, 88, 63], final: 450, totals: [1800, 1700, 1600] },
     gross12: { down: [0, 240, 480], monthly: [135, 113, 83], final: 540, totals: [2160, 2040, 1920] },
@@ -278,7 +306,7 @@
   // Zustand
   let currentTerm = 12;
   let currentPriceType = 'net';
-  let currentDownAmount = 100;   // Mindestanzahlung 100
+  let currentDownAmount = 100;   // Anzahlung pro Stück (mind. 100)
   let includeFinal = true;
   let currentQty = 1;            // 1,2,3,4
 
@@ -310,7 +338,12 @@
   const printFinalMode = document.getElementById('printFinalMode');
   const printDown = document.getElementById('printDown');
   const printQty = document.getElementById('printQty');
-  const qtyBtns = document.querySelectorAll('.qty-btn');
+  const printDiscount = document.getElementById('printDiscount');
+
+  // Slider für Stückzahl
+  const qtySlider = document.getElementById('qtySlider');
+  const qtyDisplay = document.getElementById('qtyDisplay');
+  const qtyDiscountDisplay = document.getElementById('qtyDiscountDisplay');
 
   // Hilfsfunktionen
   function getDataset() {
@@ -320,7 +353,7 @@
     return REF_DATA.gross24;
   }
 
-  // Interpolierte monatliche Rate für gegebene Anzahlung
+  // Interpolierte monatliche Rate für ein Stück (abhängig von Anzahlung pro Stück)
   function computeMonthlyFromDown(downAmount) {
     const dataset = getDataset();
     const downPoints = dataset.down;
@@ -341,9 +374,10 @@
     return monthlyPoints[0];
   }
 
+  // Finaler Betrag pro Stück
   function getFinalOriginal() { return getDataset().final; }
 
-  // Interpolierter Gesamtpreis (ohne Rabatt)
+  // Gesamtpreis pro Stück (ohne Rabatt)
   function interpolateTotalPrice(downAmount) {
     const dataset = getDataset();
     const downPoints = dataset.down;
@@ -364,46 +398,60 @@
     return totalPoints[0];
   }
 
-  // Hauptberechnung unter Berücksichtigung von Rabatt und Menge
+  // Hauptberechnung mit Multiplikation pro Stück und Mengenrabatt
   function computePlan() {
-    const monthlyRaw = computeMonthlyFromDown(currentDownAmount);
-    const finalOriginal = getFinalOriginal();
-    const term = currentTerm;
     const qty = currentQty;
     const discount = getDiscount(qty);
+    const basePricePerUnit = interpolateTotalPrice(currentDownAmount);
+    const baseFinalPerUnit = getFinalOriginal();
+    const baseMonthlyPerUnit = computeMonthlyFromDown(currentDownAmount);
 
-    // Basispreis (ohne Rabatt) – wir nehmen den interpolierten Gesamtpreis
-    const baseTotal = interpolateTotalPrice(currentDownAmount);
-    // Rabatt auf den Gesamtpreis (vor Anzahlung)
-    const discountedTotal = baseTotal * (1 - discount);
-    // Anzahlung bleibt gleich
-    const down = currentDownAmount;
-    const remaining = discountedTotal - down;
-    // Verteile den Rest auf Raten + Schlussrate (wenn vorhanden)
+    // Gesamtpreis vor Rabatt
+    const totalBasePrice = basePricePerUnit * qty;
+    // Rabatt abziehen
+    const discountedTotal = totalBasePrice * (1 - discount);
+    // Anzahlung gesamt
+    const totalDown = currentDownAmount * qty;
+    // Schlussrate gesamt (wird später berücksichtigt)
+    const totalFinal = baseFinalPerUnit * qty;
+
     let monthlyFinal, finalAmount, totalCost, totalMonthlySum;
     if (includeFinal) {
-      // Schlussrate bleibt der ursprüngliche Wert (oder anteilig? wir nehmen den Original-Finalbetrag)
-      // Achtung: Der Finalbetrag ist fix aus der Tabelle, aber wir sollten ihn anteilig kürzen?
-      // Besser: Schlussrate bleibt unverändert, der Rest wird auf Raten verteilt.
-      finalAmount = finalOriginal;
-      // Restschuld = remaining - finalAmount
-      const rest = Math.max(0, remaining - finalAmount);
-      monthlyFinal = rest / term;
-      totalCost = down + monthlyFinal * term + finalAmount;
-      totalMonthlySum = monthlyFinal * term;
+      // Rest nach Anzahlung und Schlussrate
+      const remaining = discountedTotal - totalDown - totalFinal;
+      // Wenn negativ, dann ist die Anzahlung schon zu hoch – wir setzen die Rate auf 0
+      if (remaining < 0) {
+        monthlyFinal = 0;
+        finalAmount = totalFinal;
+        totalCost = totalDown + totalFinal;
+        totalMonthlySum = 0;
+      } else {
+        monthlyFinal = remaining / currentTerm;
+        finalAmount = totalFinal;
+        totalCost = totalDown + monthlyFinal * currentTerm + finalAmount;
+        totalMonthlySum = monthlyFinal * currentTerm;
+      }
     } else {
-      finalAmount = 0;
-      monthlyFinal = remaining / term;
-      totalCost = down + monthlyFinal * term;
-      totalMonthlySum = monthlyFinal * term;
+      // ohne Schlussrate
+      const remaining = discountedTotal - totalDown;
+      if (remaining < 0) {
+        monthlyFinal = 0;
+        finalAmount = 0;
+        totalCost = totalDown;
+        totalMonthlySum = 0;
+      } else {
+        monthlyFinal = remaining / currentTerm;
+        finalAmount = 0;
+        totalCost = totalDown + monthlyFinal * currentTerm;
+        totalMonthlySum = monthlyFinal * currentTerm;
+      }
     }
-    return { monthly: monthlyFinal, final: finalAmount, totalCost, totalMonthlySum, discount, discountedTotal };
+    return { monthly: monthlyFinal, final: finalAmount, totalCost, totalMonthlySum, discount, discountedTotal, totalDown };
   }
 
-  // Ersparnis im Vergleich zu 100€ Anzahlung
+  // Ersparnis im Vergleich zu 100€ Anzahlung pro Stück
   function computeSavings() {
     const oldDown = currentDownAmount;
-    // Referenz: Anzahlung = 100 (Mindestbetrag)
     currentDownAmount = 100;
     const plan100 = computePlan();
     currentDownAmount = oldDown;
@@ -418,8 +466,9 @@
     const totalCost = plan.totalCost;
     const totalMonthly = plan.totalMonthlySum;
     const discountPercent = (plan.discount * 100).toFixed(0);
+    const totalDown = plan.totalDown;
 
-    downDisplay.innerHTML = `€${currentDownAmount.toLocaleString(undefined, {minimumFractionDigits:2, maximumFractionDigits:2})}`;
+    downDisplay.innerHTML = `€${totalDown.toLocaleString(undefined, {minimumFractionDigits:2, maximumFractionDigits:2})}`;
     monthlyDisplay.innerHTML = `€${monthly.toLocaleString(undefined, {minimumFractionDigits:2, maximumFractionDigits:2})}`;
     finalDisplaySpan.innerHTML = includeFinal ? `€${finalVal.toLocaleString(undefined, {minimumFractionDigits:2})}` : `€0 (entfällt)`;
     discountDisplay.innerHTML = discountPercent + '%';
@@ -427,11 +476,11 @@
     totalMonthlySumSpan.innerHTML = `€${totalMonthly.toLocaleString(undefined, {minimumFractionDigits:2})}`;
     effectiveTotalSpan.innerHTML = `€${totalCost.toLocaleString(undefined, {minimumFractionDigits:2})}`;
 
-    // Ersparnis anzeigen
+    // Ersparnis (durch höhere Anzahlung)
     const saved = computeSavings();
     if (saved > 0.5 && currentDownAmount > 100) {
       savingMessageDiv.style.display = 'block';
-      savingMessageDiv.innerHTML = `<i class="fas fa-piggy-bank"></i> Sparpotenzial: €${saved.toFixed(2)} gegenüber 100€ Anzahlung`;
+      savingMessageDiv.innerHTML = `<i class="fas fa-piggy-bank"></i> Sparpotenzial: €${saved.toFixed(2)} gegenüber 100€ Anzahlung pro Stück`;
     } else {
       savingMessageDiv.style.display = 'none';
     }
@@ -443,15 +492,15 @@
       if (Math.abs(d - currentDownAmount) < 0.1) isPreset = true;
     }
     if (isPreset && includeFinal) {
-      let officialTotal = interpolateTotalPrice(currentDownAmount);
-      officialHintSpan.innerHTML = `<i class="fas fa-check-circle"></i> Offizieller Vertragspreis (ohne Rabatt): €${officialTotal.toFixed(2)}`;
+      let officialTotal = interpolateTotalPrice(currentDownAmount) * currentQty * (1 - getDiscount(currentQty));
+      officialHintSpan.innerHTML = `<i class="fas fa-check-circle"></i> Offizieller Vertragspreis (mit Mengenrabatt): €${officialTotal.toFixed(2)}`;
     } else if (!includeFinal) {
       officialHintSpan.innerHTML = `<i class="fas fa-chart-line"></i> Volltilgung ohne Schlussrate – individuelle Monatsrate.`;
     } else {
       officialHintSpan.innerHTML = `<i class="fas fa-chart-line"></i> Individuelle Finanzierung – flexibel anpassbar.`;
     }
 
-    // Aktive Presets
+    // Aktive Presets (Down-Payment)
     updatePresetActiveState();
     // Slider & Input sync
     if (document.activeElement !== customInput) customInput.value = currentDownAmount;
@@ -465,6 +514,12 @@
     printFinalMode.textContent = includeFinal ? 'ja' : 'nein (vollgetilgt)';
     printDown.textContent = currentDownAmount.toFixed(0);
     printQty.textContent = currentQty;
+    printDiscount.textContent = discountPercent;
+
+    // Stückzahl-Slider aktualisieren
+    qtyDisplay.textContent = currentQty;
+    const disc = getDiscount(currentQty);
+    qtyDiscountDisplay.textContent = (disc * 100).toFixed(0) + '% Rabatt';
   }
 
   function updatePresetActiveState() {
@@ -478,21 +533,19 @@
 
   function rebuildDownPills() {
     const container = document.getElementById('downpaymentContainer');
-    // Presets: 100, 200, 400 (Mindestanzahlung 100)
+    // Presets: 100, 200, 400 (pro Stück)
     const presetValues = [100, 200, 400];
     const containerHTML = presetValues.map(val => {
-      // monatliche Rate für diesen Wert interpolieren (für Anzeige)
       const monthly = computeMonthlyFromDown(val);
       let label = val === 100 ? 'mind. Anzahlung' : (val === 200 ? 'mittlere' : 'maximale');
       const activeClass = Math.abs(val - currentDownAmount) < 0.5 ? 'active' : '';
       return `<div class="down-pill ${activeClass}" data-value="${val}">
         <div class="down-amount">€${val}</div>
         <div class="down-label">${label}</div>
-        <div class="small-note" style="font-size:0.6rem;">Rate: €${monthly.toFixed(0)}</div>
+        <div class="small-note" style="font-size:0.6rem;">Rate/Stk: €${monthly.toFixed(0)}</div>
       </div>`;
     }).join('');
     container.innerHTML = containerHTML;
-    // Event-Listener für Klicks
     container.querySelectorAll('.down-pill').forEach(pill => {
       pill.addEventListener('click', () => {
         const val = parseFloat(pill.getAttribute('data-value'));
@@ -523,11 +576,6 @@
     document.getElementById('priceGrossBtn').classList.toggle('active', currentPriceType === 'gross');
     document.getElementById('finalIncludeBtn').classList.toggle('active', includeFinal === true);
     document.getElementById('finalExcludeBtn').classList.toggle('active', includeFinal === false);
-    // Qty Buttons aktiv setzen
-    qtyBtns.forEach(btn => {
-      const qty = parseInt(btn.getAttribute('data-qty'));
-      btn.classList.toggle('active', qty === currentQty);
-    });
   }
 
   // Event-Listener initialisieren
@@ -539,16 +587,14 @@
     document.getElementById('finalIncludeBtn').onclick = () => { if (!includeFinal) { includeFinal = true; onPlanStructureChange(); saveToLocalStorage(); } };
     document.getElementById('finalExcludeBtn').onclick = () => { if (includeFinal) { includeFinal = false; onPlanStructureChange(); saveToLocalStorage(); } };
 
-    // Qty Buttons
-    qtyBtns.forEach(btn => {
-      btn.addEventListener('click', () => {
-        const qty = parseInt(btn.getAttribute('data-qty'));
-        if (qty !== currentQty) {
-          currentQty = qty;
-          onPlanStructureChange();
-          saveToLocalStorage();
-        }
-      });
+    // Stückzahl-Slider
+    qtySlider.addEventListener('input', (e) => {
+      const val = parseInt(e.target.value);
+      if (val !== currentQty) {
+        currentQty = val;
+        refreshAll();
+        saveToLocalStorage();
+      }
     });
 
     customInput.addEventListener('input', (e) => {
@@ -597,6 +643,8 @@
     rebuildDownPills();
     refreshAll();
     onPlanStructureChange();
+    // Slider-Wert setzen
+    qtySlider.value = currentQty;
   }
 
   // Dark Mode
