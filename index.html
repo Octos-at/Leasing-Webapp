@@ -4,9 +4,9 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
   <title>OctoStool Finanzierung | Raten & Leasing Pro</title>
-  <!-- Homescreen / Favicon -->
-  <link rel="icon" href="octos-logo.png" type="image/png">
-  <link rel="apple-touch-icon" href="octos-logo.png">
+  <!-- Homescreen / Favicon – jetzt mit "Logo App.png" -->
+  <link rel="icon" href="Logo App.png" type="image/png">
+  <link rel="apple-touch-icon" href="Logo App.png">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-title" content="OctoStool Finanzierung">
   <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700;14..32,800&display=swap" rel="stylesheet">
@@ -36,7 +36,7 @@
     body.light .total-compare { background:#eef2ff; }
     body.light .toggle-btn, body.light .down-pill { background:white; border-color:#cbd5e1; color:#1e293b; }
     body.light .toggle-btn.active, body.light .down-pill.active { background:#1e3a8a; border-color:#1e3a8a; color:white; }
-    body.light .brand h1 { color:#0a2540; }  /* schwarz im Light Mode */
+    body.light .brand h1 { color:#0a2540; }
     /* Dark Mode */
     body.dark {
       background:#0d1117;
@@ -45,7 +45,7 @@
     body.dark .calculator-card { background:#161b22; border:1px solid #30363d; box-shadow:0 25px 35px -12px rgba(0,0,0,0.8); }
     body.dark .card-header { border-bottom-color:#30363d; background:#1c2128; border-radius:2rem 2rem 0 0; }
     body.dark .logo-img { filter:invert(1) brightness(1.2); }
-    body.dark .brand h1 { color:#e6edf3; }  /* weiß im Dark Mode */
+    body.dark .brand h1 { color:#e6edf3; }
     body.dark .badge, body.dark .toggle-btn, body.dark .down-pill { background:#21262d; border-color:#30363d; color:#c9d1d9; }
     body.dark .toggle-btn.active, body.dark .down-pill.active { background:#1f6feb; border-color:#1f6feb; color:white; box-shadow:0 0 0 1px #1f6feb80; }
     body.dark .controls-panel, body.dark .results-panel { background:#0d1117; border:1px solid #30363d; }
@@ -96,7 +96,7 @@
       .print-summary { display:block !important; margin-bottom:1rem; font-size:0.9rem; border-bottom:1px solid #ccc; padding-bottom:0.5rem; }
       .print-summary span { font-weight:600; }
     }
-    .print-summary { display:none; } /* nur sichtbar beim Druck */
+    .print-summary { display:none; }
   </style>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js" integrity="sha512-GsLlZN/3F2ErC5ifS5QtgpiJtWd43JWSuIgh7mbzZ8zBps+dvLusV+eNQATqgA/HdeKFVgA5v3S/cIrLF7QnIg==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 </head>
@@ -105,7 +105,8 @@
   <div class="card-header">
     <div class="brand">
       <div class="logo-area">
-        <img src="octos-logo.png" alt="OctoStool Logo" class="logo-img" onerror="this.src='https://placehold.co/48x48?text=Octo'; this.onerror=null;">
+        <!-- Logo jetzt als "Logo App.png" -->
+        <img src="Logo App.png" alt="OctoStool Logo" class="logo-img" onerror="this.src='https://placehold.co/48x48?text=Octo'; this.onerror=null;">
         <h1>OctoStool Finanzierung</h1>
       </div>
       <div class="badge"><i class="fas fa-star-of-life"></i> Pro Modus</div>
@@ -233,7 +234,6 @@
   const savingMessageDiv = document.getElementById('savingMessage');
   const officialHintSpan = document.getElementById('officialHint');
   const finalRow = document.getElementById('finalRow');
-  // Druck-Infos
   const printTerm = document.getElementById('printTerm');
   const printPriceType = document.getElementById('printPriceType');
   const printFinalMode = document.getElementById('printFinalMode');
@@ -363,7 +363,6 @@
     if (!includeFinal) finalRow.style.opacity = '0.6';
     else finalRow.style.opacity = '1';
     
-    // Druck-Zusammenfassung aktualisieren
     printTerm.textContent = currentTerm;
     printPriceType.textContent = (currentPriceType === 'net' ? 'Netto' : 'Brutto');
     printFinalMode.textContent = includeFinal ? 'ja' : 'nein (vollgetilgt)';
