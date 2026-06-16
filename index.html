@@ -3,92 +3,100 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
-  <title>OCTOstool Finanzierung | Raten & Leasing Pro</title>
+  <title>OctoStool Finanzierung | Raten & Leasing Pro</title>
+  <!-- Homescreen / Favicon -->
+  <link rel="icon" href="octos-logo.png" type="image/png">
+  <link rel="apple-touch-icon" href="octos-logo.png">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-title" content="OctoStool Finanzierung">
   <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700;14..32,800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
   <style>
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-    }
+    * { margin:0; padding:0; box-sizing:border-box; }
     body {
-      font-family: 'Inter', sans-serif;
-      transition: background 0.2s ease, color 0.2s ease;
-      background: #f1f5f9;
-      color: #0f172a;
-      min-height: 100vh;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      padding: 1.5rem;
+      font-family:'Inter',sans-serif;
+      transition:background 0.2s, color 0.2s;
+      background:#f1f5f9;
+      color:#0f172a;
+      min-height:100vh;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      padding:1.5rem;
     }
-    /* LIGHT MODE */
+    /* Light Mode */
     body.light {
-      background: linear-gradient(135deg, #f5f7fc 0%, #eef2f8 100%);
-      color: #0a2540;
+      background:linear-gradient(135deg,#f5f7fc 0%,#eef2f8 100%);
+      color:#0a2540;
     }
-    body.light .calculator-card { background: rgba(255,255,255,0.96); box-shadow: 0 25px 45px -12px rgba(0,0,0,0.25); }
-    body.light .card-header { border-bottom-color: rgba(0,0,0,0.08); background: transparent; }
-    body.light .controls-panel, body.light .results-panel { background: #f8fafc; }
-    body.light .result-card { background: #f1f5f9; }
-    body.light .total-compare { background: #eef2ff; }
-    body.light .toggle-btn, body.light .down-pill { background: white; border-color: #cbd5e1; color: #1e293b; }
-    body.light .toggle-btn.active, body.light .down-pill.active { background: #1e3a8a; border-color: #1e3a8a; color: white; }
-    /* DARK MODE */
+    body.light .calculator-card { background:rgba(255,255,255,0.96); box-shadow:0 25px 45px -12px rgba(0,0,0,0.25); }
+    body.light .card-header { border-bottom-color:rgba(0,0,0,0.08); background:transparent; }
+    body.light .controls-panel, body.light .results-panel { background:#f8fafc; }
+    body.light .result-card { background:#f1f5f9; }
+    body.light .total-compare { background:#eef2ff; }
+    body.light .toggle-btn, body.light .down-pill { background:white; border-color:#cbd5e1; color:#1e293b; }
+    body.light .toggle-btn.active, body.light .down-pill.active { background:#1e3a8a; border-color:#1e3a8a; color:white; }
+    body.light .brand h1 { color:#0a2540; }  /* schwarz im Light Mode */
+    /* Dark Mode */
     body.dark {
-      background: #0d1117;
-      color: #e6edf3;
+      background:#0d1117;
+      color:#e6edf3;
     }
-    body.dark .calculator-card { background: #161b22; border: 1px solid #30363d; box-shadow: 0 25px 35px -12px rgba(0,0,0,0.8); }
-    body.dark .card-header { border-bottom-color: #30363d; background: #1c2128; border-radius: 2rem 2rem 0 0; }
-    body.dark .logo-img { filter: invert(1) brightness(1.2); }
-    body.dark .brand h1 { background: linear-gradient(135deg, #79c0ff, #58a6ff); background-clip: text; -webkit-background-clip: text; color: transparent; }
-    body.dark .badge, body.dark .toggle-btn, body.dark .down-pill { background: #21262d; border-color: #30363d; color: #c9d1d9; }
-    body.dark .toggle-btn.active, body.dark .down-pill.active { background: #1f6feb; border-color: #1f6feb; color: white; box-shadow: 0 0 0 1px #1f6feb80; }
-    body.dark .controls-panel, body.dark .results-panel { background: #0d1117; border: 1px solid #30363d; }
-    body.dark .result-card, body.dark .total-compare { background: #161b22; border: 1px solid #30363d; }
-    body.dark .custom-input { background: #0d1117; border-color: #30363d; color: #e6edf3; }
-    body.dark .dark-toggle { background: #21262d; color: #c9d1d9; border: 1px solid #30363d; }
-    /* Gemeinsam */
-    .calculator-card { max-width: 1400px; width: 100%; border-radius: 2rem; overflow: hidden; transition: all 0.2s; }
-    .card-header { display: flex; justify-content: space-between; align-items: center; padding: 1.2rem 2rem; flex-wrap: wrap; gap: 1rem; }
-    .brand { display: flex; align-items: center; gap: 1rem; flex-wrap: wrap; }
-    .logo-img { height: 48px; width: auto; object-fit: contain; transition: filter 0.2s; }
-    .badge { padding: 0.4rem 1rem; border-radius: 40px; font-size: 0.75rem; font-weight: 500; display: inline-flex; align-items: center; gap: 8px; }
-    .dark-toggle { border: none; border-radius: 60px; padding: 0.5rem 1rem; font-weight: 600; display: flex; align-items: center; gap: 10px; cursor: pointer; transition: 0.2s; }
-    .content-grid { display: grid; grid-template-columns: 1fr 1.2fr; gap: 2rem; padding: 2rem; }
-    @media (max-width: 850px) { .content-grid { grid-template-columns: 1fr; gap: 1.5rem; padding: 1.5rem; } .card-header { padding: 1rem 1.5rem; } }
-    .controls-panel, .results-panel { border-radius: 1.5rem; padding: 1.4rem; transition: all 0.2s; }
-    .section-title { font-weight: 600; font-size: 0.9rem; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 1rem; display: flex; align-items: center; gap: 8px; }
-    .toggle-group { display: flex; gap: 12px; margin-bottom: 1.5rem; flex-wrap: wrap; }
-    .toggle-btn { flex: 1; border: 1px solid; padding: 0.7rem 0; border-radius: 60px; font-weight: 600; cursor: pointer; text-align: center; display: flex; align-items: center; justify-content: center; gap: 8px; transition: 0.2s; }
-    .downpayment-options { display: flex; gap: 0.8rem; margin: 1rem 0 1rem 0; flex-wrap: wrap; }
-    .down-pill { flex: 1; min-width: 90px; border: 1px solid; border-radius: 1rem; padding: 0.7rem 0.2rem; text-align: center; cursor: pointer; transition: 0.2s; }
-    .down-amount { font-size: 1.2rem; font-weight: 800; }
-    .slider-section { margin-top: 1.2rem; }
-    .slider-label { display: flex; justify-content: space-between; font-size: 0.8rem; margin-bottom: 6px; }
-    input[type=range] { width: 100%; height: 5px; -webkit-appearance: none; background: #cbd5e1; border-radius: 5px; outline: none; }
-    input[type=range]::-webkit-slider-thumb { -webkit-appearance: none; width: 18px; height: 18px; border-radius: 50%; background: #1e3a8a; cursor: pointer; }
-    body.dark input[type=range] { background: #30363d; }
-    body.dark input[type=range]::-webkit-slider-thumb { background: #1f6feb; }
-    .custom-down-section { margin-top: 1rem; padding-top: 0.8rem; border-top: 1px dashed; }
-    .custom-input { flex: 2; padding: 0.7rem 1rem; border-radius: 1rem; border: 1px solid; font-size: 1rem; }
-    .result-card { border-radius: 1.2rem; padding: 1.2rem; margin-bottom: 1.4rem; }
-    .result-row { display: flex; justify-content: space-between; align-items: baseline; padding: 0.7rem 0; border-bottom: 1px dashed; }
-    .result-value { font-weight: 800; font-size: 1.7rem; letter-spacing: -0.02em; }
-    .saving-badge { background: #d4edda; color: #155724; padding: 0.3rem 0.8rem; border-radius: 2rem; font-size: 0.75rem; font-weight: 600; margin-top: 0.5rem; display: inline-block; }
-    body.dark .saving-badge { background: #0f532d; color: #a7f0ba; }
-    .tooltip-icon { cursor: help; margin-left: 5px; font-size: 0.8rem; opacity: 0.7; border-bottom: 1px dotted; }
-    .btn-print { background: #2c7da0; border: none; color: white; padding: 0.5rem 1rem; border-radius: 2rem; font-weight: 600; cursor: pointer; display: inline-flex; align-items: center; gap: 8px; margin-left: 1rem; transition: 0.2s; }
-    .btn-print:hover { background: #1f5e7a; }
+    body.dark .calculator-card { background:#161b22; border:1px solid #30363d; box-shadow:0 25px 35px -12px rgba(0,0,0,0.8); }
+    body.dark .card-header { border-bottom-color:#30363d; background:#1c2128; border-radius:2rem 2rem 0 0; }
+    body.dark .logo-img { filter:invert(1) brightness(1.2); }
+    body.dark .brand h1 { color:#e6edf3; }  /* weiß im Dark Mode */
+    body.dark .badge, body.dark .toggle-btn, body.dark .down-pill { background:#21262d; border-color:#30363d; color:#c9d1d9; }
+    body.dark .toggle-btn.active, body.dark .down-pill.active { background:#1f6feb; border-color:#1f6feb; color:white; box-shadow:0 0 0 1px #1f6feb80; }
+    body.dark .controls-panel, body.dark .results-panel { background:#0d1117; border:1px solid #30363d; }
+    body.dark .result-card, body.dark .total-compare { background:#161b22; border:1px solid #30363d; }
+    body.dark .custom-input { background:#0d1117; border-color:#30363d; color:#e6edf3; }
+    body.dark .dark-toggle { background:#21262d; color:#c9d1d9; border:1px solid #30363d; }
+    /* Gemeinsame Stile */
+    .calculator-card { max-width:1400px; width:100%; border-radius:2rem; overflow:hidden; transition:all 0.2s; }
+    .card-header { display:flex; justify-content:space-between; align-items:center; padding:1.2rem 2rem; flex-wrap:wrap; gap:1rem; }
+    .brand { display:flex; align-items:center; gap:1rem; flex-wrap:wrap; }
+    .logo-img { height:48px; width:auto; object-fit:contain; transition:filter 0.2s; }
+    .brand h1 { font-size:1.65rem; font-weight:800; letter-spacing:-0.3px; transition:color 0.2s; }
+    .badge { padding:0.4rem 1rem; border-radius:40px; font-size:0.75rem; font-weight:500; display:inline-flex; align-items:center; gap:8px; }
+    .dark-toggle { border:none; border-radius:60px; padding:0.5rem 1rem; font-weight:600; display:flex; align-items:center; gap:10px; cursor:pointer; transition:0.2s; }
+    .content-grid { display:grid; grid-template-columns:1fr 1.2fr; gap:2rem; padding:2rem; }
+    @media (max-width:850px) { .content-grid { grid-template-columns:1fr; gap:1.5rem; padding:1.5rem; } .card-header { padding:1rem 1.5rem; } }
+    .controls-panel, .results-panel { border-radius:1.5rem; padding:1.4rem; transition:all 0.2s; }
+    .section-title { font-weight:600; font-size:0.9rem; text-transform:uppercase; letter-spacing:0.5px; margin-bottom:1rem; display:flex; align-items:center; gap:8px; }
+    .toggle-group { display:flex; gap:12px; margin-bottom:1.5rem; flex-wrap:wrap; }
+    .toggle-btn { flex:1; border:1px solid; padding:0.7rem 0; border-radius:60px; font-weight:600; cursor:pointer; text-align:center; display:flex; align-items:center; justify-content:center; gap:8px; transition:0.2s; }
+    .downpayment-options { display:flex; gap:0.8rem; margin:1rem 0 1rem 0; flex-wrap:wrap; }
+    .down-pill { flex:1; min-width:90px; border:1px solid; border-radius:1rem; padding:0.7rem 0.2rem; text-align:center; cursor:pointer; transition:0.2s; }
+    .down-amount { font-size:1.2rem; font-weight:800; }
+    .slider-section { margin-top:1.2rem; }
+    .slider-label { display:flex; justify-content:space-between; font-size:0.8rem; margin-bottom:6px; }
+    input[type=range] { width:100%; height:5px; -webkit-appearance:none; background:#cbd5e1; border-radius:5px; outline:none; }
+    input[type=range]::-webkit-slider-thumb { -webkit-appearance:none; width:18px; height:18px; border-radius:50%; background:#1e3a8a; cursor:pointer; }
+    body.dark input[type=range] { background:#30363d; }
+    body.dark input[type=range]::-webkit-slider-thumb { background:#1f6feb; }
+    .custom-down-section { margin-top:1rem; padding-top:0.8rem; border-top:1px dashed; }
+    .custom-input { flex:2; padding:0.7rem 1rem; border-radius:1rem; border:1px solid; font-size:1rem; }
+    .result-card { border-radius:1.2rem; padding:1.2rem; margin-bottom:1.4rem; }
+    .result-row { display:flex; justify-content:space-between; align-items:baseline; padding:0.7rem 0; border-bottom:1px dashed; }
+    .result-value { font-weight:800; font-size:1.7rem; letter-spacing:-0.02em; }
+    .saving-badge { background:#d4edda; color:#155724; padding:0.3rem 0.8rem; border-radius:2rem; font-size:0.75rem; font-weight:600; margin-top:0.5rem; display:inline-block; }
+    body.dark .saving-badge { background:#0f532d; color:#a7f0ba; }
+    .tooltip-icon { cursor:help; margin-left:5px; font-size:0.8rem; opacity:0.7; border-bottom:1px dotted; }
+    .btn-print { background:#2c7da0; border:none; color:white; padding:0.5rem 1rem; border-radius:2rem; font-weight:600; cursor:pointer; display:inline-flex; align-items:center; gap:8px; margin-left:1rem; transition:0.2s; }
+    .btn-print:hover { background:#1f5e7a; }
+    /* Druck-CSS für Export */
     @media print {
-      body { background: white; padding: 0; }
-      .dark-toggle, .btn-print, .toggle-group .toggle-btn, .down-pill, .custom-down-section, .slider-section, .controls-panel .section-title:first-child { display: none; }
-      .controls-panel, .results-panel { border: none; background: white; box-shadow: none; }
-      .calculator-card { max-width: 100%; box-shadow: none; }
-      .result-value { color: black; }
+      body { background:white; padding:0; color:black !important; }
+      .dark-toggle, .btn-print, .toggle-group .toggle-btn, .down-pill, .custom-down-section, .slider-section, .controls-panel .section-title:first-child { display:none !important; }
+      .controls-panel, .results-panel { border:none !important; background:white !important; box-shadow:none !important; }
+      .calculator-card { max-width:100%; box-shadow:none; border:none; }
+      .result-value { color:black !important; }
+      .brand h1 { color:black !important; }
+      .print-summary { display:block !important; margin-bottom:1rem; font-size:0.9rem; border-bottom:1px solid #ccc; padding-bottom:0.5rem; }
+      .print-summary span { font-weight:600; }
     }
+    .print-summary { display:none; } /* nur sichtbar beim Druck */
   </style>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js" integrity="sha512-GsLlZN/3F2ErC5ifS5QtgpiJtWd43JWSuIgh7mbzZ8zBps+dvLusV+eNQATqgA/HdeKFVgA5v3S/cIrLF7QnIg==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 </head>
@@ -97,12 +105,12 @@
   <div class="card-header">
     <div class="brand">
       <div class="logo-area">
-        <img src="octos-logo.png" alt="OCTOstool Logo" class="logo-img" onerror="this.src='https://placehold.co/48x48?text=OCTO'; this.onerror=null;">
-        <h1>OCTOstool Finanzierung</h1>
+        <img src="octos-logo.png" alt="OctoStool Logo" class="logo-img" onerror="this.src='https://placehold.co/48x48?text=Octo'; this.onerror=null;">
+        <h1>OctoStool Finanzierung</h1>
       </div>
       <div class="badge"><i class="fas fa-star-of-life"></i> Pro Modus</div>
     </div>
-    <div style="display: flex; gap: 10px;">
+    <div style="display:flex; gap:10px;">
       <button id="printPdfBtn" class="btn-print"><i class="fas fa-file-pdf"></i> PDF / Drucken</button>
       <button id="darkModeBtn" class="dark-toggle"><i class="fas fa-moon"></i> Dark mode</button>
     </div>
@@ -123,28 +131,25 @@
         <div id="priceGrossBtn" class="toggle-btn"><i class="fas fa-receipt"></i> Bruttopreis <span class="tooltip-icon" title="Preis inklusive Mehrwertsteuer (20% Beispiel)">ⓘ</span></div>
       </div>
 
-      <!-- Neuer Toggle: Schlussrate ja/nein -->
       <div class="toggle-group">
         <div id="finalIncludeBtn" class="toggle-btn active"><i class="fas fa-flag-checkered"></i> Mit Schlussrate</div>
         <div id="finalExcludeBtn" class="toggle-btn"><i class="fas fa-ban"></i> Ohne Schlussrate</div>
       </div>
 
-      <div class="section-title" style="margin-top: 0.5rem;"><i class="fas fa-hand-holding-usd"></i> Anzahlung (Schnellauswahl)</div>
+      <div class="section-title" style="margin-top:0.5rem;"><i class="fas fa-hand-holding-usd"></i> Anzahlung (Schnellauswahl)</div>
       <div class="downpayment-options" id="downpaymentContainer"></div>
 
-      <!-- Slider für Anzahlung -->
       <div class="slider-section">
         <div class="slider-label"><span><i class="fas fa-sliders-h"></i> Anzahlung per Schieberegler</span><span id="sliderValueLabel">€0</span></div>
         <input type="range" id="downSlider" min="0" max="800" step="10" value="0">
       </div>
 
-      <!-- Eigene Anzahlung als Zahl -->
       <div class="custom-down-section">
         <div class="custom-label"><i class="fas fa-pen-alt"></i> Eigene Anzahlung (€)</div>
         <div class="custom-input-wrapper">
           <input type="number" id="customDownInput" class="custom-input" placeholder="Betrag" value="0" step="10" min="0">
         </div>
-        <div class="small-note" style="margin-top: 6px;"><i class="fas fa-chart-line"></i> Die monatliche Rate wird linear interpoliert.</div>
+        <div class="small-note" style="margin-top:6px;"><i class="fas fa-chart-line"></i> Die monatliche Rate wird linear interpoliert.</div>
       </div>
     </div>
 
@@ -152,6 +157,14 @@
     <div class="results-panel" id="resultsPanel">
       <div class="section-title"><i class="fas fa-chart-line"></i> Finanzielle Übersicht</div>
       
+      <!-- Druckzusammenfassung (nur sichtbar beim Druck) -->
+      <div class="print-summary">
+        <strong>OctoStool Finanzierung</strong> – Laufzeit: <span id="printTerm">12</span> Monate,
+        Preisbasis: <span id="printPriceType">Netto</span>,
+        Schlussrate: <span id="printFinalMode">ja</span>,
+        Anzahlung: <span id="printDown">0</span> €
+      </div>
+
       <div class="result-card">
         <div class="result-row">
           <span class="result-label"><i class="fas fa-arrow-down"></i> Anzahlung</span>
@@ -168,24 +181,24 @@
       </div>
 
       <div class="total-compare">
-        <div class="flex-between" style="margin-bottom: 12px;">
+        <div class="flex-between" style="margin-bottom:12px;">
           <span><i class="fas fa-file-invoice-dollar"></i> <strong>Gesamtbetrag</strong> (alle Zahlungen)</span>
-          <span class="highlight" id="calculatedTotal" style="font-size: 1.6rem; font-weight: 800;">€0</span>
+          <span class="highlight" id="calculatedTotal" style="font-size:1.6rem; font-weight:800;">€0</span>
         </div>
-        <div id="savingMessage" class="saving-badge" style="display: none;">💰 Ersparnis durch höhere Anzahlung</div>
-        <div class="small-note" style="margin-top: 8px;" id="officialHint">
+        <div id="savingMessage" class="saving-badge" style="display:none;">💰 Ersparnis durch höhere Anzahlung</div>
+        <div class="small-note" style="margin-top:8px;" id="officialHint">
           <i class="fas fa-chart-line"></i> flexible Finanzierung
         </div>
       </div>
 
-      <div style="margin-top: 1rem; background: #f1f5f980; border-radius: 1rem; padding: 0.8rem;">
+      <div style="margin-top:1rem; background:#f1f5f980; border-radius:1rem; padding:0.8rem;">
         <div class="flex-between">
           <span><i class="fas fa-chart-simple"></i> Gesamte Ratenzahlungen</span>
-          <span id="totalMonthlySum" style="font-weight: 700;">€0</span>
+          <span id="totalMonthlySum" style="font-weight:700;">€0</span>
         </div>
-        <div class="flex-between" style="margin-top: 8px;">
+        <div class="flex-between" style="margin-top:8px;">
           <span><i class="fas fa-euro-sign"></i> Effektive Gesamtkosten</span>
-          <span id="effectiveTotal" style="font-weight: 800;">€0</span>
+          <span id="effectiveTotal" style="font-weight:800;">€0</span>
         </div>
       </div>
     </div>
@@ -205,7 +218,7 @@
   let currentTerm = 12;
   let currentPriceType = 'net';
   let currentDownAmount = 0;
-  let includeFinal = true;   // true = mit Schlussrate, false = ohne (dann wird Rest auf Raten verteilt)
+  let includeFinal = true;
   
   // DOM
   const downDisplay = document.getElementById('downDisplay');
@@ -220,8 +233,12 @@
   const savingMessageDiv = document.getElementById('savingMessage');
   const officialHintSpan = document.getElementById('officialHint');
   const finalRow = document.getElementById('finalRow');
+  // Druck-Infos
+  const printTerm = document.getElementById('printTerm');
+  const printPriceType = document.getElementById('printPriceType');
+  const printFinalMode = document.getElementById('printFinalMode');
+  const printDown = document.getElementById('printDown');
   
-  // Hilfsfunktionen
   function getDataset() {
     if (currentTerm === 12 && currentPriceType === 'net') return REF_DATA.net12;
     if (currentTerm === 12 && currentPriceType === 'gross') return REF_DATA.gross12;
@@ -229,7 +246,6 @@
     return REF_DATA.gross24;
   }
   
-  // Berechne monatliche Rate basierend auf Anzahlung (interpoliert)
   function computeMonthlyFromDown(downAmount) {
     const dataset = getDataset();
     const downPoints = dataset.down;
@@ -250,40 +266,10 @@
     return monthlyPoints[0];
   }
   
-  // Finaler Betrag (Original oder 0)
   function getFinalOriginal() {
-    const dataset = getDataset();
-    return dataset.final;
+    return getDataset().final;
   }
   
-  // Berechne alles abhängig von includeFinal
-  function computePlan() {
-    const dataset = getDataset();
-    const monthlyRaw = computeMonthlyFromDown(currentDownAmount);
-    const finalOriginal = getFinalOriginal();
-    const term = currentTerm;
-    let monthlyFinal = monthlyRaw;
-    let finalAmount = includeFinal ? finalOriginal : 0;
-    let totalCost = 0;
-    let totalMonthlySum = monthlyFinal * term;
-    
-    if (includeFinal) {
-      totalCost = currentDownAmount + totalMonthlySum + finalAmount;
-    } else {
-      // Ohne Schlussrate: Der Gesamtpreis ist der offizielle Totalpreis (interpoliert)
-      // Wir berechnen den offiziellen Gesamtpreis anhand der Interpolation der Totalpreise aus Dataset
-      let totalPrice = interpolateTotalPrice(currentDownAmount);
-      // Die Restschuld = totalPrice - Anzahlung, wird gleichmäßig auf die Monate verteilt
-      const remaining = Math.max(0, totalPrice - currentDownAmount);
-      monthlyFinal = remaining / term;
-      finalAmount = 0;
-      totalCost = currentDownAmount + monthlyFinal * term;
-      totalMonthlySum = monthlyFinal * term;
-    }
-    return { monthly: monthlyFinal, final: finalAmount, totalCost, totalMonthlySum };
-  }
-  
-  // Interpoliere den Gesamtpreis (offiziell) für beliebige Anzahlung (für Modus ohne Schlussrate)
   function interpolateTotalPrice(downAmount) {
     const dataset = getDataset();
     const downPoints = dataset.down;
@@ -304,18 +290,34 @@
     return totalPoints[0];
   }
   
-  // Ersparnis im Vergleich zu keiner Anzahlung
+  function computePlan() {
+    const monthlyRaw = computeMonthlyFromDown(currentDownAmount);
+    const finalOriginal = getFinalOriginal();
+    const term = currentTerm;
+    let monthlyFinal = monthlyRaw;
+    let finalAmount = includeFinal ? finalOriginal : 0;
+    let totalCost = 0;
+    let totalMonthlySum = monthlyFinal * term;
+    if (includeFinal) {
+      totalCost = currentDownAmount + totalMonthlySum + finalAmount;
+    } else {
+      const totalPrice = interpolateTotalPrice(currentDownAmount);
+      const remaining = Math.max(0, totalPrice - currentDownAmount);
+      monthlyFinal = remaining / term;
+      finalAmount = 0;
+      totalCost = currentDownAmount + monthlyFinal * term;
+      totalMonthlySum = monthlyFinal * term;
+    }
+    return { monthly: monthlyFinal, final: finalAmount, totalCost, totalMonthlySum };
+  }
+  
   function computeSavings() {
-    const zeroDownPlan = (() => {
-      const oldDown = currentDownAmount;
-      currentDownAmount = 0;
-      const planZero = computePlan();
-      currentDownAmount = oldDown;
-      return planZero.totalCost;
-    })();
+    const oldDown = currentDownAmount;
+    currentDownAmount = 0;
+    const planZero = computePlan();
+    currentDownAmount = oldDown;
     const currentTotal = computePlan().totalCost;
-    const saved = zeroDownPlan - currentTotal;
-    return saved > 0 ? saved : 0;
+    return planZero.totalCost - currentTotal;
   }
   
   function refreshAll() {
@@ -325,14 +327,13 @@
     const totalCost = plan.totalCost;
     const totalMonthly = plan.totalMonthlySum;
     
-    downDisplay.innerHTML = `€${currentDownAmount.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2})}`;
-    monthlyDisplay.innerHTML = `€${monthly.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2})}`;
-    finalDisplaySpan.innerHTML = includeFinal ? `€${finalVal.toLocaleString(undefined, {minimumFractionDigits: 2})}` : `€0 (entfällt)`;
-    calculatedTotalSpan.innerHTML = `€${totalCost.toLocaleString(undefined, {minimumFractionDigits: 2})}`;
-    totalMonthlySumSpan.innerHTML = `€${totalMonthly.toLocaleString(undefined, {minimumFractionDigits: 2})}`;
-    effectiveTotalSpan.innerHTML = `€${totalCost.toLocaleString(undefined, {minimumFractionDigits: 2})}`;
+    downDisplay.innerHTML = `€${currentDownAmount.toLocaleString(undefined, {minimumFractionDigits:2, maximumFractionDigits:2})}`;
+    monthlyDisplay.innerHTML = `€${monthly.toLocaleString(undefined, {minimumFractionDigits:2, maximumFractionDigits:2})}`;
+    finalDisplaySpan.innerHTML = includeFinal ? `€${finalVal.toLocaleString(undefined, {minimumFractionDigits:2})}` : `€0 (entfällt)`;
+    calculatedTotalSpan.innerHTML = `€${totalCost.toLocaleString(undefined, {minimumFractionDigits:2})}`;
+    totalMonthlySumSpan.innerHTML = `€${totalMonthly.toLocaleString(undefined, {minimumFractionDigits:2})}`;
+    effectiveTotalSpan.innerHTML = `€${totalCost.toLocaleString(undefined, {minimumFractionDigits:2})}`;
     
-    // Savings
     const saved = computeSavings();
     if (saved > 0.5 && currentDownAmount > 0) {
       savingMessageDiv.style.display = 'block';
@@ -341,7 +342,6 @@
       savingMessageDiv.style.display = 'none';
     }
     
-    // Offiziellen Hinweis bei Standardwerten
     const dataset = getDataset();
     let isPreset = false;
     for (let d of dataset.down) {
@@ -356,36 +356,28 @@
       officialHintSpan.innerHTML = `<i class="fas fa-chart-line"></i> Individuelle Finanzierung – flexibel anpassbar.`;
     }
     
-    // Aktive Presets visuell aktualisieren
     updatePresetActiveState();
-    // Slider und Input synchronisieren
     if (document.activeElement !== customInput) customInput.value = currentDownAmount;
     if (document.activeElement !== downSlider) downSlider.value = currentDownAmount;
     sliderLabel.innerText = `€${currentDownAmount}`;
-    // Final Row evtl. anders darstellen
-    if (!includeFinal) {
-      finalRow.style.opacity = '0.6';
-    } else {
-      finalRow.style.opacity = '1';
-    }
+    if (!includeFinal) finalRow.style.opacity = '0.6';
+    else finalRow.style.opacity = '1';
+    
+    // Druck-Zusammenfassung aktualisieren
+    printTerm.textContent = currentTerm;
+    printPriceType.textContent = (currentPriceType === 'net' ? 'Netto' : 'Brutto');
+    printFinalMode.textContent = includeFinal ? 'ja' : 'nein (vollgetilgt)';
+    printDown.textContent = currentDownAmount.toFixed(0);
   }
   
   function updatePresetActiveState() {
     const dataset = getDataset();
     const pills = document.querySelectorAll('.down-pill');
-    let matched = false;
-    pills.forEach((pill, idx) => {
+    pills.forEach((pill) => {
       const val = parseFloat(pill.getAttribute('data-value'));
-      if (Math.abs(val - currentDownAmount) < 0.5) {
-        pill.classList.add('active');
-        matched = true;
-      } else {
-        pill.classList.remove('active');
-      }
+      if (Math.abs(val - currentDownAmount) < 0.5) pill.classList.add('active');
+      else pill.classList.remove('active');
     });
-    if (!matched) {
-      // keine aktiv
-    }
   }
   
   function rebuildDownPills() {
@@ -405,6 +397,7 @@
         currentDownAmount = val;
         syncDownInputs();
         refreshAll();
+        saveToLocalStorage();
       });
       container.appendChild(pill);
     });
@@ -418,11 +411,9 @@
   
   function onPlanStructureChange() {
     rebuildDownPills();
-    // Down amount auf max 800 begrenzen für slider
     if (currentDownAmount > 800) currentDownAmount = 800;
     syncDownInputs();
     refreshAll();
-    // Toggle Klassen
     document.getElementById('term12Btn').classList.toggle('active', currentTerm === 12);
     document.getElementById('term24Btn').classList.toggle('active', currentTerm === 24);
     document.getElementById('priceNetBtn').classList.toggle('active', currentPriceType === 'net');
@@ -431,9 +422,7 @@
     document.getElementById('finalExcludeBtn').classList.toggle('active', includeFinal === false);
   }
   
-  // Event Handler
   function initUI() {
-    // Term
     document.getElementById('term12Btn').onclick = () => { if (currentTerm !== 12) { currentTerm = 12; onPlanStructureChange(); saveToLocalStorage(); } };
     document.getElementById('term24Btn').onclick = () => { if (currentTerm !== 24) { currentTerm = 24; onPlanStructureChange(); saveToLocalStorage(); } };
     document.getElementById('priceNetBtn').onclick = () => { if (currentPriceType !== 'net') { currentPriceType = 'net'; onPlanStructureChange(); saveToLocalStorage(); } };
@@ -457,20 +446,13 @@
       refreshAll();
       saveToLocalStorage();
     });
-    // PDF/Druck
     document.getElementById('printPdfBtn').addEventListener('click', () => {
       window.print();
     });
   }
   
-  // localStorage speichern
   function saveToLocalStorage() {
-    const state = {
-      term: currentTerm,
-      priceType: currentPriceType,
-      downAmount: currentDownAmount,
-      includeFinal: includeFinal
-    };
+    const state = { term: currentTerm, priceType: currentPriceType, downAmount: currentDownAmount, includeFinal: includeFinal };
     localStorage.setItem('octo_finance_state', JSON.stringify(state));
   }
   
@@ -488,10 +470,9 @@
     syncDownInputs();
     rebuildDownPills();
     refreshAll();
-    onPlanStructureChange(); // aktualisiert toggle classes
+    onPlanStructureChange();
   }
   
-  // Darkmode (wie gehabt)
   function initDarkMode() {
     const btn = document.getElementById('darkModeBtn');
     const body = document.body;
@@ -517,7 +498,6 @@
     });
   }
   
-  // Initialisierung
   function init() {
     initDarkMode();
     initUI();
