@@ -113,31 +113,100 @@
     .qty-slider-wrapper .slider-label .qty-badge { background:#1f2937; color:white; padding:0.1rem 0.6rem; border-radius:2rem; font-size:0.7rem; }
     body.dark .qty-slider-wrapper .slider-label .qty-badge { background:#e6edf3; color:#0d1117; }
 
+    /* ===== DRUCK-OPTIMIERUNG: A4, kompakt, übersichtlich ===== */
     @media print {
-      body { background:white !important; color:black !important; }
-      body, body * { background-color:white !important; color:black !important; border-color:#ccc !important; }
-      .dark-toggle, .btn-print, .toggle-group .toggle-btn, .down-pill, .slider-section, .controls-panel .section-title:first-child,
-      .result-card, .total-compare, .total-monthly-block, .qty-slider-wrapper, .controls-panel { display:none !important; }
-      .results-panel { border:none !important; background:white !important; box-shadow:none !important; padding:0 !important; }
-      .calculator-card { max-width:100%; box-shadow:none; border:none; }
-      .brand h1 { color:black !important; }
-      .print-summary {
-        display:block !important;
-        margin:2rem auto;
-        font-size:1.1rem;
-        text-align:center;
-        padding:1.5rem;
-        border:1px solid #aaa;
-        border-radius:1rem;
-        background:white !important;
-        max-width:600px;
+      @page {
+        size: A4;
+        margin: 1.2cm 1cm;
       }
-      .print-summary .title { font-size:1.4rem; font-weight:700; margin-bottom:0.8rem; }
-      .print-summary .detail { margin:0.3rem 0; }
-      .print-summary .total { font-size:1.6rem; font-weight:800; margin-top:0.8rem; border-top:2px solid #333; padding-top:0.6rem; }
-      .card-header { border-bottom:1px solid #ccc; }
-      .brand .badge { display:none !important; }
+      body { background: white !important; color: black !important; }
+      /* Alles ausblenden außer der Zusammenfassung */
+      .dark-toggle, .btn-print, .toggle-group .toggle-btn, .down-pill, 
+      .slider-section, .controls-panel .section-title:first-child,
+      .result-card, .total-compare, .total-monthly-block, 
+      .qty-slider-wrapper, .controls-panel, .card-header .dark-toggle,
+      .card-header .btn-print { display: none !important; }
+      
+      .results-panel { 
+        border: none !important; 
+        background: white !important; 
+        box-shadow: none !important; 
+        padding: 0 !important;
+        margin: 0 !important;
+      }
+      .calculator-card { 
+        max-width: 100%; 
+        box-shadow: none; 
+        border: none;
+        border-radius: 0;
+        background: white !important;
+      }
+      .card-header {
+        border-bottom: 1px solid #ccc;
+        padding: 0.5rem 0;
+        margin-bottom: 0.8rem;
+      }
+      .brand h1 { color: black !important; font-size: 1.4rem; }
+      .brand .badge { display: none !important; }
+      .logo-img { height: 32px; }
+      
+      .print-summary {
+        display: block !important;
+        max-width: 100%;
+        margin: 0 auto;
+        padding: 0.5rem 0.2rem;
+        font-size: 13px;
+        line-height: 1.5;
+        color: black !important;
+        background: white !important;
+        text-align: left;
+      }
+      .print-summary .title {
+        font-size: 20px;
+        font-weight: 700;
+        margin-bottom: 0.6rem;
+        text-align: center;
+        border-bottom: 2px solid #222;
+        padding-bottom: 0.3rem;
+      }
+      .print-summary .detail {
+        margin: 0.15rem 0;
+        display: flex;
+        justify-content: space-between;
+        padding: 0.1rem 0;
+        border-bottom: 1px dashed #ddd;
+      }
+      .print-summary .detail strong {
+        font-weight: 600;
+      }
+      .print-summary .total {
+        font-size: 20px;
+        font-weight: 800;
+        margin-top: 0.6rem;
+        border-top: 2px solid #222;
+        padding-top: 0.4rem;
+        text-align: center;
+      }
+      .print-summary .total span {
+        font-weight: 800;
+      }
+      .print-summary hr {
+        margin: 0.4rem 0;
+        border: 0;
+        border-top: 1px solid #aaa;
+      }
+      /* Kleine Hilfszeile für den Absender o.ä. */
+      .print-footer {
+        display: block !important;
+        margin-top: 1.2rem;
+        font-size: 10px;
+        color: #666;
+        text-align: center;
+        border-top: 1px solid #ddd;
+        padding-top: 0.5rem;
+      }
     }
+    .print-footer { display: none; }
   </style>
 </head>
 <body class="light">
@@ -199,20 +268,23 @@
     <div class="results-panel" id="resultsPanel">
       <div class="section-title"><i class="fas fa-chart-line"></i> Finanzielle Übersicht</div>
       
+      <!-- Druck-Zusammenfassung (im Druck sichtbar) -->
       <div class="print-summary">
         <div class="title">OctoStool Finanzierung</div>
-        <div class="detail">Laufzeit: <span id="printTerm">12</span> Monate</div>
-        <div class="detail">Preisbasis: <span id="printPriceType">Netto</span></div>
-        <div class="detail">Schlussrate: <span id="printFinalMode">ja</span></div>
-        <div class="detail">Anzahlung (gesamt): <span id="printDown">100</span> €</div>
-        <div class="detail">Anzahl Produkte: <span id="printQty">1</span> Stück</div>
-        <div class="detail">Mengenrabatt: <span id="printDiscount">0</span>%</div>
-        <hr style="margin:0.5rem 0;">
+        <div class="detail"><span>Laufzeit:</span> <span id="printTerm">12</span> Monate</div>
+        <div class="detail"><span>Preisbasis:</span> <span id="printPriceType">Netto</span></div>
+        <div class="detail"><span>Schlussrate:</span> <span id="printFinalMode">ja</span></div>
+        <div class="detail"><span>Anzahlung (gesamt):</span> <span id="printDown">100</span> €</div>
+        <div class="detail"><span>Anzahl Produkte:</span> <span id="printQty">1</span> Stück</div>
+        <div class="detail"><span>Mengenrabatt:</span> <span id="printDiscount">0</span>%</div>
+        <hr>
         <div class="detail"><strong>Monatliche Rate:</strong> <span id="printMonthly">0</span> €</div>
         <div class="detail"><strong>Schlussrate gesamt:</strong> <span id="printFinalTotal">0</span> €</div>
         <div class="total">Gesamtbetrag: <span id="printTotal">0</span> €</div>
+        <div class="print-footer">Dieses Angebot ist unverbindlich. Alle Preise in Euro.</div>
       </div>
 
+      <!-- Normale Ansicht (nicht im Druck) -->
       <div class="result-card">
         <div class="result-row">
           <span class="result-label"><i class="fas fa-arrow-down"></i> Anzahlung (gesamt)</span>
@@ -268,7 +340,7 @@
 
   let currentTerm = 12;
   let currentPriceType = 'net';
-  let currentDownAmount = 100;   // Gesamtanzahlung (wird dynamisch an Qty angepasst)
+  let currentDownAmount = 100;
   let includeFinal = true;
   let currentQty = 1;
 
@@ -280,7 +352,6 @@
     return 0;
   }
 
-  // Dynamische Grenzen für Anzahlung basierend auf Stückzahl
   function getDownLimits(qty) {
     const limits = {
       1: { min: 100, mid: 200, max: 400, sliderMin: 100, sliderMax: 800 },
@@ -326,12 +397,10 @@
 
   function getFinalOriginal() { return getDataset().final; }
 
-  // Berechnung (Option 4: Anzahlung ist Gesamtbetrag)
   function computePlan() {
     const qty = currentQty;
     const discount = getDiscount(qty);
     const dataset = getDataset();
-    // Basispreis pro Stück bei 0 Anzahlung
     const basePricePerUnit = dataset.totals[0];
     const totalBasePrice = basePricePerUnit * qty;
     const discountedTotal = totalBasePrice * (1 - discount);
@@ -385,7 +454,6 @@
     return { monthly: monthlyFinal, final: finalAmount, totalCost, totalMonthlySum, discount, discountedTotal, totalDown, totalFinal };
   }
 
-  // Ersparnis im Vergleich zur minimalen Anzahlung (abhängig von Qty)
   function computeSavings() {
     const limits = getDownLimits(currentQty);
     const oldDown = currentDownAmount;
@@ -425,12 +493,10 @@
     officialHintSpan.innerHTML = `<i class="fas fa-chart-line"></i> Individuelle Finanzierung – flexibel anpassbar.`;
 
     updatePresetActiveState();
-    // Slider-Werte aktualisieren
     const limits = getDownLimits(currentQty);
     downSlider.min = limits.sliderMin;
     downSlider.max = limits.sliderMax;
     downSlider.step = 10;
-    // Sicherstellen, dass currentDownAmount im gültigen Bereich liegt
     if (currentDownAmount < limits.min) currentDownAmount = limits.min;
     if (currentDownAmount > limits.sliderMax) currentDownAmount = limits.sliderMax;
     downSlider.value = currentDownAmount;
@@ -460,7 +526,6 @@
       const val = presetValues[idx];
       if (val !== undefined) {
         pill.classList.toggle('active', Math.abs(val - currentDownAmount) < 0.5);
-        // Aktualisiere Anzeige
         const amountSpan = pill.querySelector('.down-amount');
         if (amountSpan) amountSpan.textContent = `€${val}`;
         const labelSpan = pill.querySelector('.down-label');
@@ -532,7 +597,7 @@
       const val = parseInt(e.target.value);
       if (val !== currentQty) {
         currentQty = val;
-        onPlanStructureChange(); // aktualisiert Grenzen und Slider
+        onPlanStructureChange();
         saveToLocalStorage();
       }
     });
@@ -573,7 +638,6 @@
         if (s.qty && [1,2,3,4].includes(s.qty)) currentQty = s.qty;
       } catch(e) {}
     }
-    // Korrektur mit aktuellen Limits
     const limits = getDownLimits(currentQty);
     if (currentDownAmount < limits.min) currentDownAmount = limits.min;
     if (currentDownAmount > limits.sliderMax) currentDownAmount = limits.sliderMax;
