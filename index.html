@@ -79,6 +79,45 @@
     body.light .saving-badge { background:#d4edda; color:#155724; border:1px solid #b7d7b0; }
     body.dark .saving-badge { background:#0f532d; color:#a7f0ba; border:1px solid #1a7a42; }
 
+    /* Grün für Rabatt-Anzeigen */
+    .qty-badge {
+      background: #2e7d32 !important;
+      color: white !important;
+      padding: 0.1rem 0.6rem;
+      border-radius: 2rem;
+      font-size: 0.7rem;
+      font-weight: 600;
+    }
+    .discount-value {
+      background: #2e7d32;
+      color: white;
+      padding: 0.1rem 0.6rem;
+      border-radius: 2rem;
+      font-size: 0.9rem;
+      font-weight: 600;
+      display: inline-block;
+    }
+    body.dark .discount-value {
+      background: #2e7d32;
+      color: white;
+    }
+    /* Grüne Schrift für die Bezeichnung "Mengenrabatt" */
+    .text-green {
+      color: #2e7d32 !important;
+      font-weight: 600;
+    }
+    body.dark .text-green {
+      color: #66bb6a !important;
+    }
+    .saving-euro {
+      color: #2e7d32;
+      font-weight: 600;
+    }
+    body.dark .saving-euro {
+      color: #66bb6a;
+    }
+
+    /* Gemeinsame Stile */
     .calculator-card { max-width:1400px; width:100%; border-radius:2rem; overflow:hidden; transition:all 0.2s; }
     .card-header { display:flex; justify-content:space-between; align-items:center; padding:1.2rem 2rem; flex-wrap:wrap; gap:1rem; }
     .brand { display:flex; align-items:center; gap:1rem; flex-wrap:wrap; }
@@ -110,101 +149,33 @@
     .qty-slider-wrapper { margin: 0.5rem 0 1rem 0; }
     .qty-slider-wrapper .slider-label { display:flex; justify-content:space-between; font-weight:500; }
     .qty-slider-wrapper .slider-label span:first-child { display:flex; align-items:center; gap:8px; }
-    .qty-slider-wrapper .slider-label .qty-badge { background:#1f2937; color:white; padding:0.1rem 0.6rem; border-radius:2rem; font-size:0.7rem; }
-    body.dark .qty-slider-wrapper .slider-label .qty-badge { background:#e6edf3; color:#0d1117; }
+    .qty-slider-wrapper .slider-label .qty-badge { background:#2e7d32; color:white; padding:0.1rem 0.6rem; border-radius:2rem; font-size:0.7rem; font-weight:600; }
 
-    /* ===== DRUCK-OPTIMIERUNG: A4, kompakt, übersichtlich ===== */
     @media print {
-      @page {
-        size: A4;
-        margin: 1.2cm 1cm;
-      }
+      @page { size: A4; margin: 1.2cm 1cm; }
       body { background: white !important; color: black !important; }
-      /* Alles ausblenden außer der Zusammenfassung */
-      .dark-toggle, .btn-print, .toggle-group .toggle-btn, .down-pill, 
+      .dark-toggle, .btn-print, .toggle-group .toggle-btn, .down-pill,
       .slider-section, .controls-panel .section-title:first-child,
-      .result-card, .total-compare, .total-monthly-block, 
+      .result-card, .total-compare, .total-monthly-block,
       .qty-slider-wrapper, .controls-panel, .card-header .dark-toggle,
       .card-header .btn-print { display: none !important; }
-      
-      .results-panel { 
-        border: none !important; 
-        background: white !important; 
-        box-shadow: none !important; 
-        padding: 0 !important;
-        margin: 0 !important;
-      }
-      .calculator-card { 
-        max-width: 100%; 
-        box-shadow: none; 
-        border: none;
-        border-radius: 0;
-        background: white !important;
-      }
-      .card-header {
-        border-bottom: 1px solid #ccc;
-        padding: 0.5rem 0;
-        margin-bottom: 0.8rem;
-      }
+      .results-panel { border: none !important; background: white !important; box-shadow: none !important; padding: 0 !important; margin: 0 !important; }
+      .calculator-card { max-width: 100%; box-shadow: none; border: none; border-radius: 0; background: white !important; }
+      .card-header { border-bottom: 1px solid #ccc; padding: 0.5rem 0; margin-bottom: 0.8rem; }
       .brand h1 { color: black !important; font-size: 1.4rem; }
       .brand .badge { display: none !important; }
       .logo-img { height: 32px; }
-      
-      .print-summary {
-        display: block !important;
-        max-width: 100%;
-        margin: 0 auto;
-        padding: 0.5rem 0.2rem;
-        font-size: 13px;
-        line-height: 1.5;
-        color: black !important;
-        background: white !important;
-        text-align: left;
-      }
-      .print-summary .title {
-        font-size: 20px;
-        font-weight: 700;
-        margin-bottom: 0.6rem;
-        text-align: center;
-        border-bottom: 2px solid #222;
-        padding-bottom: 0.3rem;
-      }
-      .print-summary .detail {
-        margin: 0.15rem 0;
-        display: flex;
-        justify-content: space-between;
-        padding: 0.1rem 0;
-        border-bottom: 1px dashed #ddd;
-      }
-      .print-summary .detail strong {
-        font-weight: 600;
-      }
-      .print-summary .total {
-        font-size: 20px;
-        font-weight: 800;
-        margin-top: 0.6rem;
-        border-top: 2px solid #222;
-        padding-top: 0.4rem;
-        text-align: center;
-      }
-      .print-summary .total span {
-        font-weight: 800;
-      }
-      .print-summary hr {
-        margin: 0.4rem 0;
-        border: 0;
-        border-top: 1px solid #aaa;
-      }
-      /* Kleine Hilfszeile für den Absender o.ä. */
-      .print-footer {
-        display: block !important;
-        margin-top: 1.2rem;
-        font-size: 10px;
-        color: #666;
-        text-align: center;
-        border-top: 1px solid #ddd;
-        padding-top: 0.5rem;
-      }
+      .print-summary { display: block !important; max-width: 100%; margin: 0 auto; padding: 0.5rem 0.2rem; font-size: 13px; line-height: 1.5; color: black !important; background: white !important; text-align: left; }
+      .print-summary .title { font-size: 20px; font-weight: 700; margin-bottom: 0.6rem; text-align: center; border-bottom: 2px solid #222; padding-bottom: 0.3rem; }
+      .print-summary .detail { margin: 0.15rem 0; display: flex; justify-content: space-between; padding: 0.1rem 0; border-bottom: 1px dashed #ddd; }
+      .print-summary .detail strong { font-weight: 600; }
+      .print-summary .total { font-size: 20px; font-weight: 800; margin-top: 0.6rem; border-top: 2px solid #222; padding-top: 0.4rem; text-align: center; }
+      .print-summary .total span { font-weight: 800; }
+      .print-summary hr { margin: 0.4rem 0; border: 0; border-top: 1px solid #aaa; }
+      .print-footer { display: block !important; margin-top: 1.2rem; font-size: 10px; color: #666; text-align: center; border-top: 1px solid #ddd; padding-top: 0.5rem; }
+      .discount-value { background: #2e7d32 !important; color: white !important; }
+      .text-green { color: #2e7d32 !important; }
+      .saving-euro { color: #2e7d32 !important; }
     }
     .print-footer { display: none; }
   </style>
@@ -226,7 +197,7 @@
 
   <div class="content-grid">
     <div class="controls-panel">
-      <div class="section-title"><i class="fas fa-sliders-h"></i> Vertragskonfiguration</div>
+      <div class="section-title"><i class="fas fa-sliders-h"></i> Finanzierungskonfigurator</div>
       
       <div class="toggle-group">
         <div id="term12Btn" class="toggle-btn active"><i class="far fa-calendar-alt"></i> 12 Monate</div>
@@ -268,7 +239,7 @@
     <div class="results-panel" id="resultsPanel">
       <div class="section-title"><i class="fas fa-chart-line"></i> Finanzielle Übersicht</div>
       
-      <!-- Druck-Zusammenfassung (im Druck sichtbar) -->
+      <!-- Druck-Zusammenfassung -->
       <div class="print-summary">
         <div class="title">OctoStool Finanzierung</div>
         <div class="detail"><span>Laufzeit:</span> <span id="printTerm">12</span> Monate</div>
@@ -276,7 +247,7 @@
         <div class="detail"><span>Schlussrate:</span> <span id="printFinalMode">ja</span></div>
         <div class="detail"><span>Anzahlung (gesamt):</span> <span id="printDown">100</span> €</div>
         <div class="detail"><span>Anzahl Produkte:</span> <span id="printQty">1</span> Stück</div>
-        <div class="detail"><span>Mengenrabatt:</span> <span id="printDiscount">0</span>%</div>
+        <div class="detail"><span>Mengenrabatt:</span> <span id="printDiscount" class="discount-value">0%</span> <span id="printDiscountEuro" class="saving-euro">(€0,00 gespart)</span></div>
         <hr>
         <div class="detail"><strong>Monatliche Rate:</strong> <span id="printMonthly">0</span> €</div>
         <div class="detail"><strong>Schlussrate gesamt:</strong> <span id="printFinalTotal">0</span> €</div>
@@ -298,9 +269,10 @@
           <span class="result-label"><i class="fas fa-flag-checkered"></i> Schlussrate (gesamt)</span>
           <span class="result-value" id="finalDisplay">€0</span>
         </div>
+        <!-- Zeile für Mengenrabatt mit grüner Überschrift und Euro-Betrag -->
         <div class="result-row">
-          <span class="result-label"><i class="fas fa-cubes"></i> Mengenrabatt</span>
-          <span class="result-value" id="discountDisplay">0%</span>
+          <span class="result-label text-green"><i class="fas fa-cubes"></i> Mengenrabatt</span>
+          <span class="result-value" id="discountDisplay"></span>
         </div>
       </div>
 
@@ -309,7 +281,7 @@
           <span><i class="fas fa-file-invoice-dollar"></i> <strong>Gesamtbetrag</strong> (alle Zahlungen)</span>
           <span class="highlight" id="calculatedTotal" style="font-size:1.6rem; font-weight:800;">€0</span>
         </div>
-        <div id="savingMessage" class="saving-badge" style="display:none;">💰 Sparpotenzial: €X</div>
+        <div id="savingMessage" class="saving-badge" style="display:none;">💰 Sparpotenzial: <span id="savingAmount" class="saving-euro">€0</span></div>
         <div class="small-note" style="margin-top:8px;" id="officialHint">
           <i class="fas fa-chart-line"></i> flexible Finanzierung
         </div>
@@ -373,6 +345,7 @@
   const downSlider = document.getElementById('downSlider');
   const sliderLabel = document.getElementById('sliderValueLabel');
   const savingMessageDiv = document.getElementById('savingMessage');
+  const savingAmountSpan = document.getElementById('savingAmount');
   const officialHintSpan = document.getElementById('officialHint');
   const finalRow = document.getElementById('finalRow');
   const printTerm = document.getElementById('printTerm');
@@ -381,6 +354,7 @@
   const printDown = document.getElementById('printDown');
   const printQty = document.getElementById('printQty');
   const printDiscount = document.getElementById('printDiscount');
+  const printDiscountEuro = document.getElementById('printDiscountEuro');
   const printMonthly = document.getElementById('printMonthly');
   const printFinalTotal = document.getElementById('printFinalTotal');
   const printTotal = document.getElementById('printTotal');
@@ -407,6 +381,7 @@
     const baseFinalPerUnit = getFinalOriginal();
     const totalFinal = baseFinalPerUnit * qty;
     const totalDown = currentDownAmount;
+    const savingsAmount = totalBasePrice - discountedTotal; // Rabattbetrag in Euro
 
     let monthlyFinal, finalAmount, totalCost, totalMonthlySum;
     if (includeFinal) {
@@ -451,7 +426,7 @@
         totalMonthlySum = monthlyFinal * currentTerm;
       }
     }
-    return { monthly: monthlyFinal, final: finalAmount, totalCost, totalMonthlySum, discount, discountedTotal, totalDown, totalFinal };
+    return { monthly: monthlyFinal, final: finalAmount, totalCost, totalMonthlySum, discount, discountedTotal, totalDown, totalFinal, savingsAmount };
   }
 
   function computeSavings() {
@@ -473,11 +448,18 @@
     const discountPercent = (plan.discount * 100).toFixed(0);
     const totalDown = plan.totalDown;
     const totalFinal = plan.totalFinal;
+    const savingsAmount = plan.savingsAmount;
 
     downDisplay.innerHTML = `€${totalDown.toLocaleString(undefined, {minimumFractionDigits:2, maximumFractionDigits:2})}`;
     monthlyDisplay.innerHTML = `€${monthly.toLocaleString(undefined, {minimumFractionDigits:2, maximumFractionDigits:2})}`;
     finalDisplaySpan.innerHTML = includeFinal ? `€${finalVal.toLocaleString(undefined, {minimumFractionDigits:2})}` : `€0 (entfällt)`;
-    discountDisplay.innerHTML = discountPercent + '%';
+    
+    // Mengenrabatt: Prozent + Euro-Betrag in Grün
+    discountDisplay.innerHTML = `
+      <span class="discount-value">${discountPercent}%</span>
+      <span style="color: #2e7d32; font-weight: 600; margin-left: 0.5rem;">(€${savingsAmount.toFixed(2)} gespart)</span>
+    `;
+    
     calculatedTotalSpan.innerHTML = `€${totalCost.toLocaleString(undefined, {minimumFractionDigits:2})}`;
     totalMonthlySumSpan.innerHTML = `€${totalMonthly.toLocaleString(undefined, {minimumFractionDigits:2})}`;
     effectiveTotalSpan.innerHTML = `€${totalCost.toLocaleString(undefined, {minimumFractionDigits:2})}`;
@@ -485,7 +467,7 @@
     const saved = computeSavings();
     if (saved > 0.5 && currentDownAmount > getDownLimits(currentQty).min) {
       savingMessageDiv.style.display = 'block';
-      savingMessageDiv.innerHTML = `<i class="fas fa-piggy-bank"></i> Sparpotenzial: €${saved.toFixed(2)}`;
+      savingAmountSpan.textContent = `€${saved.toFixed(2)}`;
     } else {
       savingMessageDiv.style.display = 'none';
     }
@@ -508,7 +490,8 @@
     printFinalMode.textContent = includeFinal ? 'ja' : 'nein (vollgetilgt)';
     printDown.textContent = currentDownAmount.toFixed(0);
     printQty.textContent = currentQty;
-    printDiscount.textContent = discountPercent;
+    printDiscount.textContent = discountPercent + '%';
+    printDiscountEuro.textContent = `(€${savingsAmount.toFixed(2)} gespart)`;
     printMonthly.textContent = monthly.toFixed(2);
     printFinalTotal.textContent = finalVal.toFixed(2);
     printTotal.textContent = totalCost.toFixed(2);
