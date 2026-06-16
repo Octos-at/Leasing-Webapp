@@ -4,7 +4,6 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
   <title>OctoStool Finanzierung | Raten & Leasing</title>
-  <!-- Homescreen / Favicon – App-Icon -->
   <link rel="icon" href="Logo App.png" type="image/png">
   <link rel="apple-touch-icon" href="Logo App.png">
   <meta name="apple-mobile-web-app-capable" content="yes">
@@ -13,7 +12,6 @@
   <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700;14..32,800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
   <style>
-    /* Alle CSS-Regeln hier – sauber eingeschlossen */
     * { margin:0; padding:0; box-sizing:border-box; }
     body {
       font-family:'Inter',sans-serif;
@@ -188,13 +186,14 @@
         </div>
       </div>
 
-      <div class="section-title" style="margin-top:0.5rem;"><i class="fas fa-hand-holding-usd"></i> Anzahlung pro Stück (mind. 100€)</div>
+      <div class="section-title" style="margin-top:0.5rem;"><i class="fas fa-hand-holding-usd"></i> Anzahlung (gesamt)</div>
       <div class="downpayment-options" id="downpaymentContainer"></div>
 
       <div class="slider-section">
-        <div class="slider-label"><span><i class="fas fa-sliders-h"></i> Anzahlung pro Stück</span><span id="sliderValueLabel">€100</span></div>
+        <div class="slider-label"><span><i class="fas fa-sliders-h"></i> Anzahlung</span><span id="sliderValueLabel">€100</span></div>
         <input type="range" id="downSlider" min="100" max="800" step="10" value="100">
       </div>
+      <div class="small-note" style="margin-top:0.3rem;">Mindestanzahlung abhängig von Stückzahl (100/200/300/400 €)</div>
     </div>
 
     <div class="results-panel" id="resultsPanel">
@@ -205,11 +204,10 @@
         <div class="detail">Laufzeit: <span id="printTerm">12</span> Monate</div>
         <div class="detail">Preisbasis: <span id="printPriceType">Netto</span></div>
         <div class="detail">Schlussrate: <span id="printFinalMode">ja</span></div>
-        <div class="detail">Anzahlung pro Stück: <span id="printDown">100</span> €</div>
+        <div class="detail">Anzahlung (gesamt): <span id="printDown">100</span> €</div>
         <div class="detail">Anzahl Produkte: <span id="printQty">1</span> Stück</div>
         <div class="detail">Mengenrabatt: <span id="printDiscount">0</span>%</div>
         <hr style="margin:0.5rem 0;">
-        <div class="detail"><strong>Anzahlung gesamt:</strong> <span id="printDownTotal">100</span> €</div>
         <div class="detail"><strong>Monatliche Rate:</strong> <span id="printMonthly">0</span> €</div>
         <div class="detail"><strong>Schlussrate gesamt:</strong> <span id="printFinalTotal">0</span> €</div>
         <div class="total">Gesamtbetrag: <span id="printTotal">0</span> €</div>
@@ -270,7 +268,7 @@
 
   let currentTerm = 12;
   let currentPriceType = 'net';
-  let currentDownAmount = 100;
+  let currentDownAmount = 100;   // Gesamtanzahlung (wird dynamisch an Qty angepasst)
   let includeFinal = true;
   let currentQty = 1;
 
@@ -280,6 +278,17 @@
     if (qty === 3) return 0.15;
     if (qty === 4) return 0.20;
     return 0;
+  }
+
+  // Dynamische Grenzen für Anzahlung basierend auf Stückzahl
+  function getDownLimits(qty) {
+    const limits = {
+      1: { min: 100, mid: 200, max: 400, sliderMin: 100, sliderMax: 800 },
+      2: { min: 200, mid: 400, max: 600, sliderMin: 200, sliderMax: 1000 },
+      3: { min: 300, mid: 600, max: 900, sliderMin: 300, sliderMax: 1200 },
+      4: { min: 400, mid: 800, max: 1200, sliderMin: 400, sliderMax: 1400 }
+    };
+    return limits[qty] || limits[1];
   }
 
   // DOM
@@ -301,7 +310,6 @@
   const printDown = document.getElementById('printDown');
   const printQty = document.getElementById('printQty');
   const printDiscount = document.getElementById('printDiscount');
-  const printDownTotal = document.getElementById('printDownTotal');
   const printMonthly = document.getElementById('printMonthly');
   const printFinalTotal = document.getElementById('printFinalTotal');
   const printTotal = document.getElementById('printTotal');
@@ -316,66 +324,44 @@
     return REF_DATA.gross24;
   }
 
-  function computeMonthlyFromDown(downAmount) {
-    const dataset = getDataset();
-    const downPoints = dataset.down;
-    const monthlyPoints = dataset.monthly;
-    let down = Math.max(0, downAmount);
-    if (down <= downPoints[0]) return monthlyPoints[0];
-    if (down >= downPoints[downPoints.length - 1]) {
-      const last = downPoints.length - 1;
-      const slope = (monthlyPoints[last] - monthlyPoints[last-1]) / (downPoints[last] - downPoints[last-1]);
-      return Math.max(0, monthlyPoints[last] + slope * (down - downPoints[last]));
-    }
-    for (let i = 0; i < downPoints.length - 1; i++) {
-      if (down >= downPoints[i] && down <= downPoints[i+1]) {
-        const t = (down - downPoints[i]) / (downPoints[i+1] - downPoints[i]);
-        return monthlyPoints[i] + t * (monthlyPoints[i+1] - monthlyPoints[i]);
-      }
-    }
-    return monthlyPoints[0];
-  }
-
   function getFinalOriginal() { return getDataset().final; }
 
-  function interpolateTotalPrice(downAmount) {
-    const dataset = getDataset();
-    const downPoints = dataset.down;
-    const totalPoints = dataset.totals;
-    let down = Math.max(0, downAmount);
-    if (down <= downPoints[0]) return totalPoints[0];
-    if (down >= downPoints[downPoints.length - 1]) {
-      const last = downPoints.length - 1;
-      const slope = (totalPoints[last] - totalPoints[last-1]) / (downPoints[last] - downPoints[last-1]);
-      return totalPoints[last] + slope * (down - downPoints[last]);
-    }
-    for (let i = 0; i < downPoints.length - 1; i++) {
-      if (down >= downPoints[i] && down <= downPoints[i+1]) {
-        const t = (down - downPoints[i]) / (downPoints[i+1] - downPoints[i]);
-        return totalPoints[i] + t * (totalPoints[i+1] - totalPoints[i]);
-      }
-    }
-    return totalPoints[0];
-  }
-
+  // Berechnung (Option 4: Anzahlung ist Gesamtbetrag)
   function computePlan() {
     const qty = currentQty;
     const discount = getDiscount(qty);
-    const basePricePerUnit = interpolateTotalPrice(currentDownAmount);
-    const baseFinalPerUnit = getFinalOriginal();
+    const dataset = getDataset();
+    // Basispreis pro Stück bei 0 Anzahlung
+    const basePricePerUnit = dataset.totals[0];
     const totalBasePrice = basePricePerUnit * qty;
     const discountedTotal = totalBasePrice * (1 - discount);
-    const totalDown = currentDownAmount * qty;
+    const baseFinalPerUnit = getFinalOriginal();
     const totalFinal = baseFinalPerUnit * qty;
+    const totalDown = currentDownAmount;
 
     let monthlyFinal, finalAmount, totalCost, totalMonthlySum;
     if (includeFinal) {
       const remaining = discountedTotal - totalDown - totalFinal;
       if (remaining < 0) {
-        monthlyFinal = 0;
-        finalAmount = totalFinal;
-        totalCost = totalDown + totalFinal;
-        totalMonthlySum = 0;
+        if (totalDown >= discountedTotal) {
+          monthlyFinal = 0;
+          finalAmount = 0;
+          totalCost = discountedTotal;
+          totalMonthlySum = 0;
+        } else {
+          const restAfterDown = discountedTotal - totalDown;
+          if (restAfterDown <= 0) {
+            monthlyFinal = 0;
+            finalAmount = 0;
+            totalCost = discountedTotal;
+            totalMonthlySum = 0;
+          } else {
+            finalAmount = restAfterDown;
+            monthlyFinal = 0;
+            totalCost = totalDown + finalAmount;
+            totalMonthlySum = 0;
+          }
+        }
       } else {
         monthlyFinal = remaining / currentTerm;
         finalAmount = totalFinal;
@@ -387,7 +373,7 @@
       if (remaining < 0) {
         monthlyFinal = 0;
         finalAmount = 0;
-        totalCost = totalDown;
+        totalCost = discountedTotal;
         totalMonthlySum = 0;
       } else {
         monthlyFinal = remaining / currentTerm;
@@ -399,13 +385,15 @@
     return { monthly: monthlyFinal, final: finalAmount, totalCost, totalMonthlySum, discount, discountedTotal, totalDown, totalFinal };
   }
 
+  // Ersparnis im Vergleich zur minimalen Anzahlung (abhängig von Qty)
   function computeSavings() {
+    const limits = getDownLimits(currentQty);
     const oldDown = currentDownAmount;
-    currentDownAmount = 100;
-    const plan100 = computePlan();
+    currentDownAmount = limits.min;
+    const planMin = computePlan();
     currentDownAmount = oldDown;
     const currentTotal = computePlan().totalCost;
-    return Math.max(0, plan100.totalCost - currentTotal);
+    return Math.max(0, planMin.totalCost - currentTotal);
   }
 
   function refreshAll() {
@@ -427,29 +415,25 @@
     effectiveTotalSpan.innerHTML = `€${totalCost.toLocaleString(undefined, {minimumFractionDigits:2})}`;
 
     const saved = computeSavings();
-    if (saved > 0.5 && currentDownAmount > 100) {
+    if (saved > 0.5 && currentDownAmount > getDownLimits(currentQty).min) {
       savingMessageDiv.style.display = 'block';
       savingMessageDiv.innerHTML = `<i class="fas fa-piggy-bank"></i> Sparpotenzial: €${saved.toFixed(2)}`;
     } else {
       savingMessageDiv.style.display = 'none';
     }
 
-    const dataset = getDataset();
-    let isPreset = false;
-    for (let d of dataset.down) {
-      if (Math.abs(d - currentDownAmount) < 0.1) isPreset = true;
-    }
-    if (isPreset && includeFinal) {
-      let officialTotal = interpolateTotalPrice(currentDownAmount) * currentQty * (1 - getDiscount(currentQty));
-      officialHintSpan.innerHTML = `<i class="fas fa-check-circle"></i> Offizieller Vertragspreis (mit Mengenrabatt): €${officialTotal.toFixed(2)}`;
-    } else if (!includeFinal) {
-      officialHintSpan.innerHTML = `<i class="fas fa-chart-line"></i> Volltilgung ohne Schlussrate – individuelle Monatsrate.`;
-    } else {
-      officialHintSpan.innerHTML = `<i class="fas fa-chart-line"></i> Individuelle Finanzierung – flexibel anpassbar.`;
-    }
+    officialHintSpan.innerHTML = `<i class="fas fa-chart-line"></i> Individuelle Finanzierung – flexibel anpassbar.`;
 
     updatePresetActiveState();
-    if (document.activeElement !== downSlider) downSlider.value = currentDownAmount;
+    // Slider-Werte aktualisieren
+    const limits = getDownLimits(currentQty);
+    downSlider.min = limits.sliderMin;
+    downSlider.max = limits.sliderMax;
+    downSlider.step = 10;
+    // Sicherstellen, dass currentDownAmount im gültigen Bereich liegt
+    if (currentDownAmount < limits.min) currentDownAmount = limits.min;
+    if (currentDownAmount > limits.sliderMax) currentDownAmount = limits.sliderMax;
+    downSlider.value = currentDownAmount;
     sliderLabel.innerText = `€${currentDownAmount}`;
     finalRow.style.opacity = includeFinal ? '1' : '0.6';
 
@@ -459,9 +443,8 @@
     printDown.textContent = currentDownAmount.toFixed(0);
     printQty.textContent = currentQty;
     printDiscount.textContent = discountPercent;
-    printDownTotal.textContent = totalDown.toFixed(2);
     printMonthly.textContent = monthly.toFixed(2);
-    printFinalTotal.textContent = totalFinal.toFixed(2);
+    printFinalTotal.textContent = finalVal.toFixed(2);
     printTotal.textContent = totalCost.toFixed(2);
 
     qtyDisplay.textContent = currentQty;
@@ -470,25 +453,36 @@
   }
 
   function updatePresetActiveState() {
-    const dataset = getDataset();
+    const limits = getDownLimits(currentQty);
+    const presetValues = [limits.min, limits.mid, limits.max];
     const pills = document.querySelectorAll('.down-pill');
-    pills.forEach(pill => {
-      const val = parseFloat(pill.getAttribute('data-value'));
-      pill.classList.toggle('active', Math.abs(val - currentDownAmount) < 0.5);
+    pills.forEach((pill, idx) => {
+      const val = presetValues[idx];
+      if (val !== undefined) {
+        pill.classList.toggle('active', Math.abs(val - currentDownAmount) < 0.5);
+        // Aktualisiere Anzeige
+        const amountSpan = pill.querySelector('.down-amount');
+        if (amountSpan) amountSpan.textContent = `€${val}`;
+        const labelSpan = pill.querySelector('.down-label');
+        if (labelSpan) {
+          if (val === limits.min) labelSpan.textContent = 'mind. Anzahlung';
+          else if (val === limits.mid) labelSpan.textContent = 'mittlere';
+          else if (val === limits.max) labelSpan.textContent = 'maximale';
+        }
+      }
     });
   }
 
   function rebuildDownPills() {
     const container = document.getElementById('downpaymentContainer');
-    const presetValues = [100, 200, 400];
+    const limits = getDownLimits(currentQty);
+    const presetValues = [limits.min, limits.mid, limits.max];
     const containerHTML = presetValues.map(val => {
-      const monthly = computeMonthlyFromDown(val);
-      let label = val === 100 ? 'mind. Anzahlung' : (val === 200 ? 'mittlere' : 'maximale');
       const activeClass = Math.abs(val - currentDownAmount) < 0.5 ? 'active' : '';
+      let label = val === limits.min ? 'mind. Anzahlung' : (val === limits.mid ? 'mittlere' : 'maximale');
       return `<div class="down-pill ${activeClass}" data-value="${val}">
         <div class="down-amount">€${val}</div>
         <div class="down-label">${label}</div>
-        <div class="small-note" style="font-size:0.6rem;">Rate/Stk: €${monthly.toFixed(0)}</div>
       </div>`;
     }).join('');
     container.innerHTML = containerHTML;
@@ -504,14 +498,18 @@
   }
 
   function syncDownInputs() {
+    const limits = getDownLimits(currentQty);
+    if (currentDownAmount < limits.min) currentDownAmount = limits.min;
+    if (currentDownAmount > limits.sliderMax) currentDownAmount = limits.sliderMax;
     downSlider.value = currentDownAmount;
     sliderLabel.innerText = `€${currentDownAmount}`;
   }
 
   function onPlanStructureChange() {
+    const limits = getDownLimits(currentQty);
+    if (currentDownAmount < limits.min) currentDownAmount = limits.min;
+    if (currentDownAmount > limits.sliderMax) currentDownAmount = limits.sliderMax;
     rebuildDownPills();
-    if (currentDownAmount < 100) currentDownAmount = 100;
-    if (currentDownAmount > 800) currentDownAmount = 800;
     syncDownInputs();
     refreshAll();
     document.getElementById('term12Btn').classList.toggle('active', currentTerm === 12);
@@ -534,13 +532,16 @@
       const val = parseInt(e.target.value);
       if (val !== currentQty) {
         currentQty = val;
-        refreshAll();
+        onPlanStructureChange(); // aktualisiert Grenzen und Slider
         saveToLocalStorage();
       }
     });
 
     downSlider.addEventListener('input', (e) => {
       let v = parseFloat(e.target.value);
+      const limits = getDownLimits(currentQty);
+      if (v < limits.min) v = limits.min;
+      if (v > limits.sliderMax) v = limits.sliderMax;
       currentDownAmount = v;
       syncDownInputs();
       refreshAll();
@@ -567,11 +568,15 @@
         const s = JSON.parse(saved);
         if (s.term === 12 || s.term === 24) currentTerm = s.term;
         if (s.priceType === 'net' || s.priceType === 'gross') currentPriceType = s.priceType;
-        if (typeof s.downAmount === 'number') currentDownAmount = Math.min(800, Math.max(100, s.downAmount));
+        if (typeof s.downAmount === 'number') currentDownAmount = s.downAmount;
         if (typeof s.includeFinal === 'boolean') includeFinal = s.includeFinal;
         if (s.qty && [1,2,3,4].includes(s.qty)) currentQty = s.qty;
       } catch(e) {}
     }
+    // Korrektur mit aktuellen Limits
+    const limits = getDownLimits(currentQty);
+    if (currentDownAmount < limits.min) currentDownAmount = limits.min;
+    if (currentDownAmount > limits.sliderMax) currentDownAmount = limits.sliderMax;
     syncDownInputs();
     rebuildDownPills();
     refreshAll();
