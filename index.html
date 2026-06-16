@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
   <title>OctoStool Finanzierung | Raten & Leasing</title>
-  <!-- Homescreen / Favicon – neues App-Icon -->
+  <!-- Homescreen / Favicon – App-Icon -->
   <link rel="icon" href="Logo App.png" type="image/png">
   <link rel="apple-touch-icon" href="Logo App.png">
   <meta name="apple-mobile-web-app-capable" content="yes">
@@ -25,7 +25,7 @@
       justify-content:center;
       padding:1.5rem;
     }
-    /* Light Mode – komplett schwarz/weiß/grau, kein Blau */
+    /* Light Mode – komplett schwarz/weiß/grau */
     body.light {
       background:#f5f7fc;
       color:#111;
@@ -49,7 +49,10 @@
     body.light .small-note { color:#6b7280; }
     body.light input[type=range] { background:#d1d5db; }
     body.light input[type=range]::-webkit-slider-thumb { background:#374151; }
-    /* Dark Mode – komplett schwarz/weiß/grau, kein Blau */
+    body.light .total-monthly-block { background:#f0f0f0; } /* für besseren Kontrast */
+    body.light .total-monthly-block .total-monthly-value { color:#111; }
+
+    /* Dark Mode – komplett schwarz/weiß/grau */
     body.dark {
       background:#0d1117;
       color:#e6edf3;
@@ -75,9 +78,14 @@
     body.dark .small-note { color:#8b949e; }
     body.dark input[type=range] { background:#30363d; }
     body.dark input[type=range]::-webkit-slider-thumb { background:#e6edf3; }
-    /* Ersparnis bleibt grün – sowohl in Light als auch Dark */
+    /* Bessere Sichtbarkeit für "Gesamte Ratenzahlungen" im Dark Mode */
+    body.dark .total-monthly-block { background:#1e293b; border:1px solid #3f4a5a; }
+    body.dark .total-monthly-block .total-monthly-value { color:#f0f6fc; font-weight:700; }
+
+    /* Ersparnis bleibt grün – in Light und Dark */
     body.light .saving-badge { background:#d4edda; color:#155724; border:1px solid #b7d7b0; }
     body.dark .saving-badge { background:#0f532d; color:#a7f0ba; border:1px solid #1a7a42; }
+
     /* Gemeinsame Stile */
     .calculator-card { max-width:1400px; width:100%; border-radius:2rem; overflow:hidden; transition:all 0.2s; }
     .card-header { display:flex; justify-content:space-between; align-items:center; padding:1.2rem 2rem; flex-wrap:wrap; gap:1rem; }
@@ -109,8 +117,23 @@
     .saving-badge { padding:0.3rem 0.8rem; border-radius:2rem; font-size:0.75rem; font-weight:600; margin-top:0.5rem; display:inline-block; }
     .tooltip-icon { cursor:help; margin-left:5px; font-size:0.8rem; opacity:0.7; border-bottom:1px dotted; }
     .print-summary { display:none; }
+
+    /* Block für "Gesamte Ratenzahlungen" – besser kontrastiert */
+    .total-monthly-block {
+      margin-top:1rem;
+      border-radius:1rem;
+      padding:0.8rem;
+      transition:background 0.2s, border 0.2s;
+    }
+    .total-monthly-block .flex-between {
+      display:flex;
+      justify-content:space-between;
+    }
+
+    /* Druck-CSS: Erzwingt immer Light-Mode */
     @media print {
-      body { background:white; padding:0; color:black !important; }
+      body { background:white !important; color:black !important; }
+      body, body * { background-color:white !important; color:black !important; border-color:#ccc !important; }
       .dark-toggle, .btn-print, .toggle-group .toggle-btn, .down-pill, .custom-down-section, .slider-section, .controls-panel .section-title:first-child { display:none !important; }
       .controls-panel, .results-panel { border:none !important; background:white !important; box-shadow:none !important; }
       .calculator-card { max-width:100%; box-shadow:none; border:none; }
@@ -118,9 +141,10 @@
       .brand h1 { color:black !important; }
       .print-summary { display:block !important; margin-bottom:1rem; font-size:0.9rem; border-bottom:1px solid #ccc; padding-bottom:0.5rem; }
       .print-summary span { font-weight:600; }
+      .total-monthly-block { background:white !important; border:1px solid #ccc !important; }
+      .total-monthly-block .total-monthly-value { color:black !important; }
     }
   </style>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js" integrity="sha512-GsLlZN/3F2ErC5ifS5QtgpiJtWd43JWSuIgh7mbzZ8zBps+dvLusV+eNQATqgA/HdeKFVgA5v3S/cIrLF7QnIg==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 </head>
 <body class="light">
 <div class="calculator-card" id="financeCard">
@@ -159,18 +183,27 @@
         <div id="finalExcludeBtn" class="toggle-btn"><i class="fas fa-ban"></i> Ohne Schlussrate</div>
       </div>
 
+      <!-- Produktanzahl mit Rabatt -->
+      <div class="section-title" style="margin-top:0.5rem;"><i class="fas fa-cubes"></i> Produktanzahl (Rabatt)</div>
+      <div class="toggle-group" id="qtyGroup">
+        <div class="toggle-btn qty-btn active" data-qty="1">1 Stück (0%)</div>
+        <div class="toggle-btn qty-btn" data-qty="2">2 Stück (-10%)</div>
+        <div class="toggle-btn qty-btn" data-qty="3">3 Stück (-15%)</div>
+        <div class="toggle-btn qty-btn" data-qty="4">4 Stück (-20%)</div>
+      </div>
+
       <div class="section-title" style="margin-top:0.5rem;"><i class="fas fa-hand-holding-usd"></i> Anzahlung (Schnellauswahl)</div>
       <div class="downpayment-options" id="downpaymentContainer"></div>
 
       <div class="slider-section">
-        <div class="slider-label"><span><i class="fas fa-sliders-h"></i> Anzahlung per Schieberegler</span><span id="sliderValueLabel">€0</span></div>
-        <input type="range" id="downSlider" min="0" max="800" step="10" value="0">
+        <div class="slider-label"><span><i class="fas fa-sliders-h"></i> Anzahlung per Schieberegler (mind. 100€)</span><span id="sliderValueLabel">€100</span></div>
+        <input type="range" id="downSlider" min="100" max="800" step="10" value="100">
       </div>
 
       <div class="custom-down-section">
-        <div class="custom-label"><i class="fas fa-pen-alt"></i> Eigene Anzahlung (€)</div>
+        <div class="custom-label"><i class="fas fa-pen-alt"></i> Eigene Anzahlung (€, mind. 100)</div>
         <div class="custom-input-wrapper">
-          <input type="number" id="customDownInput" class="custom-input" placeholder="Betrag" value="0" step="10" min="0">
+          <input type="number" id="customDownInput" class="custom-input" placeholder="100" value="100" step="10" min="100">
         </div>
         <div class="small-note" style="margin-top:6px;"><i class="fas fa-chart-line"></i> Die monatliche Rate wird linear interpoliert.</div>
       </div>
@@ -184,13 +217,14 @@
         <strong>OctoStool Finanzierung</strong> – Laufzeit: <span id="printTerm">12</span> Monate,
         Preisbasis: <span id="printPriceType">Netto</span>,
         Schlussrate: <span id="printFinalMode">ja</span>,
-        Anzahlung: <span id="printDown">0</span> €
+        Anzahlung: <span id="printDown">100</span> €,
+        Anzahl Produkte: <span id="printQty">1</span> Stück
       </div>
 
       <div class="result-card">
         <div class="result-row">
           <span class="result-label"><i class="fas fa-arrow-down"></i> Anzahlung</span>
-          <span class="result-value" id="downDisplay">€0</span>
+          <span class="result-value" id="downDisplay">€100</span>
         </div>
         <div class="result-row">
           <span class="result-label"><i class="fas fa-calendar-week"></i> Monatliche Rate</span>
@@ -199,6 +233,10 @@
         <div class="result-row" id="finalRow">
           <span class="result-label"><i class="fas fa-flag-checkered"></i> Schlussrate (Kaufoption)</span>
           <span class="result-value" id="finalDisplay">€0</span>
+        </div>
+        <div class="result-row">
+          <span class="result-label"><i class="fas fa-cubes"></i> Rabatt (Menge)</span>
+          <span class="result-value" id="discountDisplay">0%</span>
         </div>
       </div>
 
@@ -213,10 +251,11 @@
         </div>
       </div>
 
-      <div style="margin-top:1rem; background:#f3f4f6; border-radius:1rem; padding:0.8rem;">
+      <!-- Block für "Gesamte Ratenzahlungen" – jetzt mit besserem Kontrast -->
+      <div class="total-monthly-block">
         <div class="flex-between">
-          <span><i class="fas fa-chart-simple"></i> Gesamte Ratenzahlungen</span>
-          <span id="totalMonthlySum" style="font-weight:700;">€0</span>
+          <span><i class="fas fa-chart-simple"></i> <strong>Gesamte Ratenzahlungen</strong></span>
+          <span class="total-monthly-value" id="totalMonthlySum" style="font-weight:700;">€0</span>
         </div>
         <div class="flex-between" style="margin-top:8px;">
           <span><i class="fas fa-euro-sign"></i> Effektive Gesamtkosten</span>
@@ -228,7 +267,7 @@
 </div>
 
 <script>
-  // ---------- DATEN ----------
+  // ---------- REFERENZDATEN (unverändert) ----------
   const REF_DATA = {
     net12: { down: [0, 200, 400], monthly: [113, 88, 63], final: 450, totals: [1800, 1700, 1600] },
     gross12: { down: [0, 240, 480], monthly: [135, 113, 83], final: 540, totals: [2160, 2040, 1920] },
@@ -236,14 +275,27 @@
     gross24: { down: [0, 240, 480], monthly: [81, 66, 51], final: 540, totals: [2400, 2280, 2160] }
   };
 
+  // Zustand
   let currentTerm = 12;
   let currentPriceType = 'net';
-  let currentDownAmount = 0;
+  let currentDownAmount = 100;   // Mindestanzahlung 100
   let includeFinal = true;
-  
+  let currentQty = 1;            // 1,2,3,4
+
+  // Rabattfunktion: bei 2 = 10%, 3 = 15%, 4 = 20%
+  function getDiscount(qty) {
+    if (qty === 1) return 0;
+    if (qty === 2) return 0.10;
+    if (qty === 3) return 0.15;
+    if (qty === 4) return 0.20;
+    return 0;
+  }
+
+  // DOM-Referenzen
   const downDisplay = document.getElementById('downDisplay');
   const monthlyDisplay = document.getElementById('monthlyDisplay');
   const finalDisplaySpan = document.getElementById('finalDisplay');
+  const discountDisplay = document.getElementById('discountDisplay');
   const calculatedTotalSpan = document.getElementById('calculatedTotal');
   const totalMonthlySumSpan = document.getElementById('totalMonthlySum');
   const effectiveTotalSpan = document.getElementById('effectiveTotal');
@@ -257,14 +309,18 @@
   const printPriceType = document.getElementById('printPriceType');
   const printFinalMode = document.getElementById('printFinalMode');
   const printDown = document.getElementById('printDown');
-  
+  const printQty = document.getElementById('printQty');
+  const qtyBtns = document.querySelectorAll('.qty-btn');
+
+  // Hilfsfunktionen
   function getDataset() {
     if (currentTerm === 12 && currentPriceType === 'net') return REF_DATA.net12;
     if (currentTerm === 12 && currentPriceType === 'gross') return REF_DATA.gross12;
     if (currentTerm === 24 && currentPriceType === 'net') return REF_DATA.net24;
     return REF_DATA.gross24;
   }
-  
+
+  // Interpolierte monatliche Rate für gegebene Anzahlung
   function computeMonthlyFromDown(downAmount) {
     const dataset = getDataset();
     const downPoints = dataset.down;
@@ -284,9 +340,10 @@
     }
     return monthlyPoints[0];
   }
-  
+
   function getFinalOriginal() { return getDataset().final; }
-  
+
+  // Interpolierter Gesamtpreis (ohne Rabatt)
   function interpolateTotalPrice(downAmount) {
     const dataset = getDataset();
     const downPoints = dataset.down;
@@ -306,58 +363,80 @@
     }
     return totalPoints[0];
   }
-  
+
+  // Hauptberechnung unter Berücksichtigung von Rabatt und Menge
   function computePlan() {
     const monthlyRaw = computeMonthlyFromDown(currentDownAmount);
     const finalOriginal = getFinalOriginal();
     const term = currentTerm;
-    let monthlyFinal = monthlyRaw;
-    let finalAmount = includeFinal ? finalOriginal : 0;
-    let totalCost, totalMonthlySum = monthlyFinal * term;
+    const qty = currentQty;
+    const discount = getDiscount(qty);
+
+    // Basispreis (ohne Rabatt) – wir nehmen den interpolierten Gesamtpreis
+    const baseTotal = interpolateTotalPrice(currentDownAmount);
+    // Rabatt auf den Gesamtpreis (vor Anzahlung)
+    const discountedTotal = baseTotal * (1 - discount);
+    // Anzahlung bleibt gleich
+    const down = currentDownAmount;
+    const remaining = discountedTotal - down;
+    // Verteile den Rest auf Raten + Schlussrate (wenn vorhanden)
+    let monthlyFinal, finalAmount, totalCost, totalMonthlySum;
     if (includeFinal) {
-      totalCost = currentDownAmount + totalMonthlySum + finalAmount;
+      // Schlussrate bleibt der ursprüngliche Wert (oder anteilig? wir nehmen den Original-Finalbetrag)
+      // Achtung: Der Finalbetrag ist fix aus der Tabelle, aber wir sollten ihn anteilig kürzen?
+      // Besser: Schlussrate bleibt unverändert, der Rest wird auf Raten verteilt.
+      finalAmount = finalOriginal;
+      // Restschuld = remaining - finalAmount
+      const rest = Math.max(0, remaining - finalAmount);
+      monthlyFinal = rest / term;
+      totalCost = down + monthlyFinal * term + finalAmount;
+      totalMonthlySum = monthlyFinal * term;
     } else {
-      const totalPrice = interpolateTotalPrice(currentDownAmount);
-      const remaining = Math.max(0, totalPrice - currentDownAmount);
-      monthlyFinal = remaining / term;
       finalAmount = 0;
-      totalCost = currentDownAmount + monthlyFinal * term;
+      monthlyFinal = remaining / term;
+      totalCost = down + monthlyFinal * term;
       totalMonthlySum = monthlyFinal * term;
     }
-    return { monthly: monthlyFinal, final: finalAmount, totalCost, totalMonthlySum };
+    return { monthly: monthlyFinal, final: finalAmount, totalCost, totalMonthlySum, discount, discountedTotal };
   }
-  
+
+  // Ersparnis im Vergleich zu 100€ Anzahlung
   function computeSavings() {
     const oldDown = currentDownAmount;
-    currentDownAmount = 0;
-    const planZero = computePlan();
+    // Referenz: Anzahlung = 100 (Mindestbetrag)
+    currentDownAmount = 100;
+    const plan100 = computePlan();
     currentDownAmount = oldDown;
     const currentTotal = computePlan().totalCost;
-    return Math.max(0, planZero.totalCost - currentTotal);
+    return Math.max(0, plan100.totalCost - currentTotal);
   }
-  
+
   function refreshAll() {
     const plan = computePlan();
     const monthly = plan.monthly;
     const finalVal = plan.final;
     const totalCost = plan.totalCost;
     const totalMonthly = plan.totalMonthlySum;
-    
+    const discountPercent = (plan.discount * 100).toFixed(0);
+
     downDisplay.innerHTML = `€${currentDownAmount.toLocaleString(undefined, {minimumFractionDigits:2, maximumFractionDigits:2})}`;
     monthlyDisplay.innerHTML = `€${monthly.toLocaleString(undefined, {minimumFractionDigits:2, maximumFractionDigits:2})}`;
     finalDisplaySpan.innerHTML = includeFinal ? `€${finalVal.toLocaleString(undefined, {minimumFractionDigits:2})}` : `€0 (entfällt)`;
+    discountDisplay.innerHTML = discountPercent + '%';
     calculatedTotalSpan.innerHTML = `€${totalCost.toLocaleString(undefined, {minimumFractionDigits:2})}`;
     totalMonthlySumSpan.innerHTML = `€${totalMonthly.toLocaleString(undefined, {minimumFractionDigits:2})}`;
     effectiveTotalSpan.innerHTML = `€${totalCost.toLocaleString(undefined, {minimumFractionDigits:2})}`;
-    
+
+    // Ersparnis anzeigen
     const saved = computeSavings();
-    if (saved > 0.5 && currentDownAmount > 0) {
+    if (saved > 0.5 && currentDownAmount > 100) {
       savingMessageDiv.style.display = 'block';
-      savingMessageDiv.innerHTML = `<i class="fas fa-piggy-bank"></i> Sparpotenzial: €${saved.toFixed(2)} gegenüber 0€ Anzahlung`;
+      savingMessageDiv.innerHTML = `<i class="fas fa-piggy-bank"></i> Sparpotenzial: €${saved.toFixed(2)} gegenüber 100€ Anzahlung`;
     } else {
       savingMessageDiv.style.display = 'none';
     }
-    
+
+    // Offizieller Hinweis
     const dataset = getDataset();
     let isPreset = false;
     for (let d of dataset.down) {
@@ -365,25 +444,29 @@
     }
     if (isPreset && includeFinal) {
       let officialTotal = interpolateTotalPrice(currentDownAmount);
-      officialHintSpan.innerHTML = `<i class="fas fa-check-circle"></i> Offizieller Vertragspreis: €${officialTotal.toFixed(2)} (inkl. Schlussrate)`;
+      officialHintSpan.innerHTML = `<i class="fas fa-check-circle"></i> Offizieller Vertragspreis (ohne Rabatt): €${officialTotal.toFixed(2)}`;
     } else if (!includeFinal) {
       officialHintSpan.innerHTML = `<i class="fas fa-chart-line"></i> Volltilgung ohne Schlussrate – individuelle Monatsrate.`;
     } else {
       officialHintSpan.innerHTML = `<i class="fas fa-chart-line"></i> Individuelle Finanzierung – flexibel anpassbar.`;
     }
-    
+
+    // Aktive Presets
     updatePresetActiveState();
+    // Slider & Input sync
     if (document.activeElement !== customInput) customInput.value = currentDownAmount;
     if (document.activeElement !== downSlider) downSlider.value = currentDownAmount;
     sliderLabel.innerText = `€${currentDownAmount}`;
     finalRow.style.opacity = includeFinal ? '1' : '0.6';
-    
+
+    // Druck-Infos
     printTerm.textContent = currentTerm;
     printPriceType.textContent = currentPriceType === 'net' ? 'Netto' : 'Brutto';
     printFinalMode.textContent = includeFinal ? 'ja' : 'nein (vollgetilgt)';
     printDown.textContent = currentDownAmount.toFixed(0);
+    printQty.textContent = currentQty;
   }
-  
+
   function updatePresetActiveState() {
     const dataset = getDataset();
     const pills = document.querySelectorAll('.down-pill');
@@ -392,49 +475,62 @@
       pill.classList.toggle('active', Math.abs(val - currentDownAmount) < 0.5);
     });
   }
-  
+
   function rebuildDownPills() {
     const container = document.getElementById('downpaymentContainer');
-    const dataset = getDataset();
-    const downVals = dataset.down;
-    const monthlyVals = dataset.monthly;
-    container.innerHTML = '';
-    downVals.forEach((val, idx) => {
-      const pill = document.createElement('div');
-      pill.className = 'down-pill';
-      if (Math.abs(val - currentDownAmount) < 0.5) pill.classList.add('active');
-      pill.setAttribute('data-value', val);
-      let label = idx === 0 ? 'keine Anzahlung' : (idx === 1 ? 'mittlere Anzahlung' : 'maximale Anzahlung');
-      pill.innerHTML = `<div class="down-amount">€${val}</div><div class="down-label">${label}</div><div class="small-note" style="font-size:0.6rem;">Rate: €${monthlyVals[idx]}</div>`;
+    // Presets: 100, 200, 400 (Mindestanzahlung 100)
+    const presetValues = [100, 200, 400];
+    const containerHTML = presetValues.map(val => {
+      // monatliche Rate für diesen Wert interpolieren (für Anzeige)
+      const monthly = computeMonthlyFromDown(val);
+      let label = val === 100 ? 'mind. Anzahlung' : (val === 200 ? 'mittlere' : 'maximale');
+      const activeClass = Math.abs(val - currentDownAmount) < 0.5 ? 'active' : '';
+      return `<div class="down-pill ${activeClass}" data-value="${val}">
+        <div class="down-amount">€${val}</div>
+        <div class="down-label">${label}</div>
+        <div class="small-note" style="font-size:0.6rem;">Rate: €${monthly.toFixed(0)}</div>
+      </div>`;
+    }).join('');
+    container.innerHTML = containerHTML;
+    // Event-Listener für Klicks
+    container.querySelectorAll('.down-pill').forEach(pill => {
       pill.addEventListener('click', () => {
+        const val = parseFloat(pill.getAttribute('data-value'));
         currentDownAmount = val;
         syncDownInputs();
         refreshAll();
         saveToLocalStorage();
       });
-      container.appendChild(pill);
     });
   }
-  
+
   function syncDownInputs() {
     customInput.value = currentDownAmount;
     downSlider.value = currentDownAmount;
     sliderLabel.innerText = `€${currentDownAmount}`;
   }
-  
+
   function onPlanStructureChange() {
     rebuildDownPills();
+    if (currentDownAmount < 100) currentDownAmount = 100;
     if (currentDownAmount > 800) currentDownAmount = 800;
     syncDownInputs();
     refreshAll();
+    // Toggle Klassen aktualisieren
     document.getElementById('term12Btn').classList.toggle('active', currentTerm === 12);
     document.getElementById('term24Btn').classList.toggle('active', currentTerm === 24);
     document.getElementById('priceNetBtn').classList.toggle('active', currentPriceType === 'net');
     document.getElementById('priceGrossBtn').classList.toggle('active', currentPriceType === 'gross');
     document.getElementById('finalIncludeBtn').classList.toggle('active', includeFinal === true);
     document.getElementById('finalExcludeBtn').classList.toggle('active', includeFinal === false);
+    // Qty Buttons aktiv setzen
+    qtyBtns.forEach(btn => {
+      const qty = parseInt(btn.getAttribute('data-qty'));
+      btn.classList.toggle('active', qty === currentQty);
+    });
   }
-  
+
+  // Event-Listener initialisieren
   function initUI() {
     document.getElementById('term12Btn').onclick = () => { if (currentTerm !== 12) { currentTerm = 12; onPlanStructureChange(); saveToLocalStorage(); } };
     document.getElementById('term24Btn').onclick = () => { if (currentTerm !== 24) { currentTerm = 24; onPlanStructureChange(); saveToLocalStorage(); } };
@@ -442,11 +538,23 @@
     document.getElementById('priceGrossBtn').onclick = () => { if (currentPriceType !== 'gross') { currentPriceType = 'gross'; onPlanStructureChange(); saveToLocalStorage(); } };
     document.getElementById('finalIncludeBtn').onclick = () => { if (!includeFinal) { includeFinal = true; onPlanStructureChange(); saveToLocalStorage(); } };
     document.getElementById('finalExcludeBtn').onclick = () => { if (includeFinal) { includeFinal = false; onPlanStructureChange(); saveToLocalStorage(); } };
-    
+
+    // Qty Buttons
+    qtyBtns.forEach(btn => {
+      btn.addEventListener('click', () => {
+        const qty = parseInt(btn.getAttribute('data-qty'));
+        if (qty !== currentQty) {
+          currentQty = qty;
+          onPlanStructureChange();
+          saveToLocalStorage();
+        }
+      });
+    });
+
     customInput.addEventListener('input', (e) => {
       let v = parseFloat(e.target.value);
-      if (isNaN(v)) v = 0;
-      v = Math.min(800, Math.max(0, v));
+      if (isNaN(v)) v = 100;
+      v = Math.min(800, Math.max(100, v));
       currentDownAmount = v;
       syncDownInputs();
       refreshAll();
@@ -461,16 +569,18 @@
     });
     document.getElementById('printPdfBtn').addEventListener('click', () => window.print());
   }
-  
+
+  // LocalStorage
   function saveToLocalStorage() {
     localStorage.setItem('octo_finance_state', JSON.stringify({
       term: currentTerm,
       priceType: currentPriceType,
       downAmount: currentDownAmount,
-      includeFinal: includeFinal
+      includeFinal: includeFinal,
+      qty: currentQty
     }));
   }
-  
+
   function loadFromLocalStorage() {
     const saved = localStorage.getItem('octo_finance_state');
     if (saved) {
@@ -478,8 +588,9 @@
         const s = JSON.parse(saved);
         if (s.term === 12 || s.term === 24) currentTerm = s.term;
         if (s.priceType === 'net' || s.priceType === 'gross') currentPriceType = s.priceType;
-        if (typeof s.downAmount === 'number') currentDownAmount = Math.min(800, Math.max(0, s.downAmount));
+        if (typeof s.downAmount === 'number') currentDownAmount = Math.min(800, Math.max(100, s.downAmount));
         if (typeof s.includeFinal === 'boolean') includeFinal = s.includeFinal;
+        if (s.qty && [1,2,3,4].includes(s.qty)) currentQty = s.qty;
       } catch(e) {}
     }
     syncDownInputs();
@@ -487,7 +598,8 @@
     refreshAll();
     onPlanStructureChange();
   }
-  
+
+  // Dark Mode
   function initDarkMode() {
     const btn = document.getElementById('darkModeBtn');
     const body = document.body;
@@ -512,7 +624,7 @@
       }
     });
   }
-  
+
   function init() {
     initDarkMode();
     initUI();
