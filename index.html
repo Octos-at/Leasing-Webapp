@@ -12,6 +12,7 @@
   <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700;14..32,800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
   <style>
+    /* ----- Alle bestehenden Stile unverändert (gekürzt) ----- */
     * { margin:0; padding:0; box-sizing:border-box; }
     body {
       font-family:'Inter',sans-serif;
@@ -24,10 +25,7 @@
       justify-content:center;
       padding:1.5rem;
     }
-    body.light {
-      background:#f5f7fc;
-      color:#111;
-    }
+    body.light { background:#f5f7fc; color:#111; }
     body.light .calculator-card { background:white; box-shadow:0 10px 30px rgba(0,0,0,0.08); }
     body.light .card-header { border-bottom:1px solid #e5e7eb; }
     body.light .controls-panel, body.light .results-panel { background:#f9fafb; }
@@ -37,7 +35,6 @@
     body.light .toggle-btn.active, body.light .down-pill.active { background:#1f2937; border-color:#1f2937; color:white; }
     body.light .brand h1 { color:#111; }
     body.light .dark-toggle { background:#e5e7eb; color:#1f2937; border:1px solid #d1d5db; }
-    body.light .dark-toggle:hover { background:#d1d5db; }
     body.light .btn-print { background:#374151; color:white; border:1px solid #4b5563; }
     body.light .btn-print:hover { background:#1f2937; }
     body.light .section-title { color:#4b5563; }
@@ -64,7 +61,6 @@
     body.dark .toggle-btn, body.dark .down-pill { background:#21262d; border-color:#30363d; color:#c9d1d9; }
     body.dark .toggle-btn.active, body.dark .down-pill.active { background:#f0f6fc; border-color:#f0f6fc; color:#0d1117; }
     body.dark .dark-toggle { background:#21262d; color:#c9d1d9; border:1px solid #30363d; }
-    body.dark .dark-toggle:hover { background:#30363d; }
     body.dark .btn-print { background:#374151; color:white; border:1px solid #4b5563; }
     body.dark .btn-print:hover { background:#4b5563; }
     body.dark .section-title { color:#8b949e; }
@@ -78,45 +74,13 @@
 
     body.light .saving-badge { background:#d4edda; color:#155724; border:1px solid #b7d7b0; }
     body.dark .saving-badge { background:#0f532d; color:#a7f0ba; border:1px solid #1a7a42; }
+    .qty-badge { background: #2e7d32 !important; color: white !important; padding: 0.1rem 0.6rem; border-radius: 2rem; font-size: 0.7rem; font-weight: 600; }
+    .discount-value { background: #2e7d32; color: white; padding: 0.1rem 0.6rem; border-radius: 2rem; font-size: 0.9rem; font-weight: 600; display: inline-block; }
+    .text-green { color: #2e7d32 !important; font-weight: 600; }
+    body.dark .text-green { color: #66bb6a !important; }
+    .saving-euro { color: #2e7d32; font-weight: 600; }
+    body.dark .saving-euro { color: #66bb6a; }
 
-    /* Grün für Rabatt-Anzeigen */
-    .qty-badge {
-      background: #2e7d32 !important;
-      color: white !important;
-      padding: 0.1rem 0.6rem;
-      border-radius: 2rem;
-      font-size: 0.7rem;
-      font-weight: 600;
-    }
-    .discount-value {
-      background: #2e7d32;
-      color: white;
-      padding: 0.1rem 0.6rem;
-      border-radius: 2rem;
-      font-size: 0.9rem;
-      font-weight: 600;
-      display: inline-block;
-    }
-    body.dark .discount-value {
-      background: #2e7d32;
-      color: white;
-    }
-    .text-green {
-      color: #2e7d32 !important;
-      font-weight: 600;
-    }
-    body.dark .text-green {
-      color: #66bb6a !important;
-    }
-    .saving-euro {
-      color: #2e7d32;
-      font-weight: 600;
-    }
-    body.dark .saving-euro {
-      color: #66bb6a;
-    }
-
-    /* Gemeinsame Stile */
     .calculator-card { max-width:1400px; width:100%; border-radius:2rem; overflow:hidden; transition:all 0.2s; }
     .card-header { display:flex; justify-content:space-between; align-items:center; padding:1.2rem 2rem; flex-wrap:wrap; gap:1rem; }
     .brand { display:flex; align-items:center; gap:1rem; flex-wrap:wrap; }
@@ -143,48 +107,109 @@
     .result-value { font-weight:800; font-size:1.7rem; letter-spacing:-0.02em; }
     .saving-badge { padding:0.3rem 0.8rem; border-radius:2rem; font-size:0.75rem; font-weight:600; margin-top:0.5rem; display:inline-block; }
     .tooltip-icon { cursor:help; margin-left:5px; font-size:0.8rem; opacity:0.7; border-bottom:1px dotted; }
-    .print-summary { display:none; }
     .total-monthly-block { margin-top:1rem; border-radius:1rem; padding:0.8rem; transition:background 0.2s, border 0.2s; }
     .total-monthly-block .flex-between { display:flex; justify-content:space-between; }
     .qty-slider-wrapper { margin: 0.5rem 0 1rem 0; }
     .qty-slider-wrapper .slider-label { display:flex; justify-content:space-between; font-weight:500; }
     .qty-slider-wrapper .slider-label span:first-child { display:flex; align-items:center; gap:8px; }
     .qty-slider-wrapper .slider-label .qty-badge { background:#2e7d32; color:white; padding:0.1rem 0.6rem; border-radius:2rem; font-size:0.7rem; font-weight:600; }
+    .total-compare { border-radius: 1.2rem; padding: 0.9rem; margin-top: 1rem; }
 
-    /* total-compare rund machen */
-    .total-compare {
-      border-radius: 1.2rem;
-      padding: 0.9rem;
-      margin-top: 1rem;
-    }
-
+    /* ===== DRUCK: PERFEKTE TABELLE MIT LOGO ===== */
     @media print {
-      @page { size: A4; margin: 1.2cm 1cm; }
-      body { background: white !important; color: black !important; }
-      .dark-toggle, .btn-print, .toggle-group .toggle-btn, .down-pill,
-      .slider-section, .controls-panel .section-title:first-child,
-      .result-card, .total-compare, .total-monthly-block,
-      .qty-slider-wrapper, .controls-panel, .card-header .dark-toggle,
-      .card-header .btn-print { display: none !important; }
-      .results-panel { border: none !important; background: white !important; box-shadow: none !important; padding: 0 !important; margin: 0 !important; }
-      .calculator-card { max-width: 100%; box-shadow: none; border: none; border-radius: 0; background: white !important; }
-      .card-header { border-bottom: 1px solid #ccc; padding: 0.5rem 0; margin-bottom: 0.8rem; }
-      .brand h1 { color: black !important; font-size: 1.4rem; }
-      .brand .badge { display: none !important; }
-      .logo-img { height: 32px; }
-      .print-summary { display: block !important; max-width: 100%; margin: 0 auto; padding: 0.5rem 0.2rem; font-size: 13px; line-height: 1.5; color: black !important; background: white !important; text-align: left; }
-      .print-summary .title { font-size: 20px; font-weight: 700; margin-bottom: 0.6rem; text-align: center; border-bottom: 2px solid #222; padding-bottom: 0.3rem; }
-      .print-summary .detail { margin: 0.15rem 0; display: flex; justify-content: space-between; padding: 0.1rem 0; border-bottom: 1px dashed #ddd; }
-      .print-summary .detail strong { font-weight: 600; }
-      .print-summary .total { font-size: 20px; font-weight: 800; margin-top: 0.6rem; border-top: 2px solid #222; padding-top: 0.4rem; text-align: center; }
-      .print-summary .total span { font-weight: 800; }
-      .print-summary hr { margin: 0.4rem 0; border: 0; border-top: 1px solid #aaa; }
-      .print-footer { display: block !important; margin-top: 1.2rem; font-size: 10px; color: #666; text-align: center; border-top: 1px solid #ddd; padding-top: 0.5rem; }
-      .discount-value { background: #2e7d32 !important; color: white !important; }
-      .text-green { color: #2e7d32 !important; }
-      .saving-euro { color: #2e7d32 !important; }
+      /* Alles ausblenden, was nicht die Tabelle ist */
+      body, body * { background: white !important; color: black !important; border-color: #222 !important; }
+      body { display: block; padding: 0.3cm; margin: 0; }
+      .calculator-card, .card-header, .content-grid, .controls-panel, .results-panel,
+      .result-card, .total-compare, .total-monthly-block, .qty-slider-wrapper,
+      .slider-section, .downpayment-options, .toggle-group, .brand .badge,
+      .dark-toggle, .btn-print, .tooltip-icon, .print-summary {
+        display: none !important;
+      }
+      /* Die Druck-Tabelle einblenden – mit Logo */
+      .print-content {
+        display: block !important;
+        max-width: 100%;
+        font-family: 'Inter', sans-serif;
+        transform: scale(0.88);
+        transform-origin: top left;
+        width: 113%; /* Kompensiert die Skalierung */
+        padding: 0.2cm;
+      }
+      .print-content .header {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        margin-bottom: 10px;
+        border-bottom: 2px solid #222;
+        padding-bottom: 6px;
+      }
+      .print-content .header img {
+        height: 40px;
+        width: auto;
+      }
+      .print-content .header h2 {
+        font-size: 22px;
+        font-weight: 700;
+        margin: 0;
+        color: black !important;
+      }
+      .print-content table {
+        width: 100%;
+        border-collapse: collapse;
+        font-size: 13px;
+        margin-top: 8px;
+      }
+      .print-content table td {
+        padding: 8px 10px;
+        border: 1px solid #555;
+        text-align: left;
+        background: white !important;
+        color: black !important;
+      }
+      .print-content table .label {
+        font-weight: 600;
+        background: #f5f5f5 !important;
+        width: 45%;
+      }
+      .print-content table .value {
+        width: 55%;
+      }
+      .print-content .highlight-row td {
+        font-weight: 700;
+        background: #f0f0f0 !important;
+        border-top: 2px solid #222;
+        font-size: 15px;
+      }
+      .print-content .saving-highlight {
+        background: #d4edda !important;
+        color: #155724 !important;
+        font-weight: 700;
+        padding: 10px 14px;
+        border-radius: 6px;
+        text-align: center;
+        border: 1px solid #155724;
+        margin-top: 10px;
+        font-size: 15px;
+      }
+      .print-content .saving-highlight .saving-euro {
+        color: #155724 !important;
+        font-weight: 800;
+      }
+      /* Kein Footer */
+      .print-content .footer {
+        display: none !important;
+      }
+      /* Keine Kopfzeile in der Tabelle */
+      .print-content table thead {
+        display: none;
+      }
     }
-    .print-footer { display: none; }
+
+    /* Standardmäßig versteckt */
+    .print-content {
+      display: none;
+    }
   </style>
 </head>
 <body class="light">
@@ -236,7 +261,6 @@
       <div class="section-title" style="margin-top:0.5rem;"><i class="fas fa-hand-holding-usd"></i> Anzahlung (gesamt)</div>
       <div class="downpayment-options" id="downpaymentContainer"></div>
 
-      <!-- Slider-Bereich: Anzeige direkt neben Label -->
       <div class="slider-section">
         <div class="slider-label">
           <span><i class="fas fa-sliders-h"></i> Anzahlung: <span id="sliderValueLabel">€100</span></span>
@@ -249,23 +273,6 @@
     <div class="results-panel" id="resultsPanel">
       <div class="section-title"><i class="fas fa-chart-line"></i> Finanzielle Übersicht</div>
       
-      <!-- Druck-Zusammenfassung -->
-      <div class="print-summary">
-        <div class="title">OctoStool Finanzierung</div>
-        <div class="detail"><span>Laufzeit:</span> <span id="printTerm">12</span> Monate</div>
-        <div class="detail"><span>Preisbasis:</span> <span id="printPriceType">Netto</span></div>
-        <div class="detail"><span>Schlussrate:</span> <span id="printFinalMode">ja</span></div>
-        <div class="detail"><span>Anzahlung (gesamt):</span> <span id="printDown">100</span> €</div>
-        <div class="detail"><span>Anzahl Produkte:</span> <span id="printQty">1</span> Stück</div>
-        <div class="detail"><span>Mengenrabatt:</span> <span id="printDiscount" class="discount-value">0%</span> <span id="printDiscountEuro" class="saving-euro">(€0,00 gespart)</span></div>
-        <hr>
-        <div class="detail"><strong>Monatliche Rate:</strong> <span id="printMonthly">0</span> €</div>
-        <div class="detail"><strong>Schlussrate gesamt:</strong> <span id="printFinalTotal">0</span> €</div>
-        <div class="total">Gesamtbetrag: <span id="printTotal">0</span> €</div>
-        <div class="print-footer">Dieses Angebot ist unverbindlich. Alle Preise in Euro.</div>
-      </div>
-
-      <!-- Normale Ansicht (nicht im Druck) -->
       <div class="result-card">
         <div class="result-row">
           <span class="result-label"><i class="fas fa-arrow-down"></i> Anzahlung (gesamt)</span>
@@ -285,7 +292,6 @@
         </div>
       </div>
 
-      <!-- Total-Compare-Box – jetzt mit border-radius -->
       <div class="total-compare">
         <div class="flex-between" style="margin-bottom:12px;">
           <span><i class="fas fa-file-invoice-dollar"></i> <strong>Gesamtbetrag</strong> (alle Zahlungen)</span>
@@ -311,8 +317,32 @@
   </div>
 </div>
 
+<!-- ===== DRUCK-TABELLE (versteckt, wird beim Drucken eingeblendet) ===== -->
+<div class="print-content">
+  <div class="header">
+    <img src="octos-logo.png" alt="OctoStool Logo" onerror="this.style.display='none';">
+    <h2>OctoStool Finanzierung</h2>
+  </div>
+  <table>
+    <tbody>
+      <tr><td class="label">Laufzeit</td><td class="value" id="printTerm">12 Monate</td></tr>
+      <tr><td class="label">Preisbasis</td><td class="value" id="printPrice">Netto</td></tr>
+      <tr><td class="label">Schlussrate</td><td class="value" id="printFinal">ja</td></tr>
+      <tr><td class="label">Anzahlung (gesamt)</td><td class="value" id="printDown">100,00 €</td></tr>
+      <tr><td class="label">Anzahl Produkte</td><td class="value" id="printQty">1 Stück</td></tr>
+      <tr><td class="label">Mengenrabatt</td><td class="value" id="printDiscount">0% (€0,00 gespart)</td></tr>
+      <tr><td class="label"><strong>Monatliche Rate</strong></td><td class="value" id="printMonthly">0,00 €</td></tr>
+      <tr><td class="label"><strong>Schlussrate gesamt</strong></td><td class="value" id="printFinalTotal">0,00 €</td></tr>
+      <tr class="highlight-row"><td class="label"><strong>Gesamtbetrag</strong></td><td class="value" id="printTotal">0,00 €</td></tr>
+    </tbody>
+  </table>
+  <div class="saving-highlight" id="printSavingMessage" style="display:none;">
+    💰 Sparpotenzial: <span class="saving-euro" id="printSavingAmount">€0,00</span>
+  </div>
+</div>
+
 <script>
-  // ---------- Daten (für 1 Stück) ----------
+  // ---------- Daten (unverändert) ----------
   const REF_DATA = {
     net12: { down: [0, 200, 400], monthly: [113, 88, 63], final: 450, totals: [1800, 1700, 1600] },
     gross12: { down: [0, 240, 480], monthly: [135, 113, 83], final: 540, totals: [2160, 2040, 1920] },
@@ -358,19 +388,22 @@
   const savingAmountSpan = document.getElementById('savingAmount');
   const officialHintSpan = document.getElementById('officialHint');
   const finalRow = document.getElementById('finalRow');
-  const printTerm = document.getElementById('printTerm');
-  const printPriceType = document.getElementById('printPriceType');
-  const printFinalMode = document.getElementById('printFinalMode');
-  const printDown = document.getElementById('printDown');
-  const printQty = document.getElementById('printQty');
-  const printDiscount = document.getElementById('printDiscount');
-  const printDiscountEuro = document.getElementById('printDiscountEuro');
-  const printMonthly = document.getElementById('printMonthly');
-  const printFinalTotal = document.getElementById('printFinalTotal');
-  const printTotal = document.getElementById('printTotal');
   const qtySlider = document.getElementById('qtySlider');
   const qtyDisplay = document.getElementById('qtyDisplay');
   const qtyDiscountDisplay = document.getElementById('qtyDiscountDisplay');
+
+  // Druck-Tabellen-Elemente
+  const printTerm = document.getElementById('printTerm');
+  const printPrice = document.getElementById('printPrice');
+  const printFinal = document.getElementById('printFinal');
+  const printDown = document.getElementById('printDown');
+  const printQty = document.getElementById('printQty');
+  const printDiscount = document.getElementById('printDiscount');
+  const printMonthly = document.getElementById('printMonthly');
+  const printFinalTotal = document.getElementById('printFinalTotal');
+  const printTotal = document.getElementById('printTotal');
+  const printSavingMessage = document.getElementById('printSavingMessage');
+  const printSavingAmount = document.getElementById('printSavingAmount');
 
   function getDataset() {
     if (currentTerm === 12 && currentPriceType === 'net') return REF_DATA.net12;
@@ -398,22 +431,13 @@
       const remaining = discountedTotal - totalDown - totalFinal;
       if (remaining < 0) {
         if (totalDown >= discountedTotal) {
-          monthlyFinal = 0;
-          finalAmount = 0;
-          totalCost = discountedTotal;
-          totalMonthlySum = 0;
+          monthlyFinal = 0; finalAmount = 0; totalCost = discountedTotal; totalMonthlySum = 0;
         } else {
           const restAfterDown = discountedTotal - totalDown;
           if (restAfterDown <= 0) {
-            monthlyFinal = 0;
-            finalAmount = 0;
-            totalCost = discountedTotal;
-            totalMonthlySum = 0;
+            monthlyFinal = 0; finalAmount = 0; totalCost = discountedTotal; totalMonthlySum = 0;
           } else {
-            finalAmount = restAfterDown;
-            monthlyFinal = 0;
-            totalCost = totalDown + finalAmount;
-            totalMonthlySum = 0;
+            finalAmount = restAfterDown; monthlyFinal = 0; totalCost = totalDown + finalAmount; totalMonthlySum = 0;
           }
         }
       } else {
@@ -425,10 +449,7 @@
     } else {
       const remaining = discountedTotal - totalDown;
       if (remaining < 0) {
-        monthlyFinal = 0;
-        finalAmount = 0;
-        totalCost = discountedTotal;
-        totalMonthlySum = 0;
+        monthlyFinal = 0; finalAmount = 0; totalCost = discountedTotal; totalMonthlySum = 0;
       } else {
         monthlyFinal = remaining / currentTerm;
         finalAmount = 0;
@@ -494,20 +515,30 @@
     sliderLabel.innerText = `€${currentDownAmount}`;
     finalRow.style.opacity = includeFinal ? '1' : '0.6';
 
-    printTerm.textContent = currentTerm;
-    printPriceType.textContent = currentPriceType === 'net' ? 'Netto' : 'Brutto';
-    printFinalMode.textContent = includeFinal ? 'ja' : 'nein (vollgetilgt)';
-    printDown.textContent = currentDownAmount.toFixed(0);
-    printQty.textContent = currentQty;
-    printDiscount.textContent = discountPercent + '%';
-    printDiscountEuro.textContent = `(€${savingsAmount.toFixed(2)} gespart)`;
-    printMonthly.textContent = monthly.toFixed(2);
-    printFinalTotal.textContent = finalVal.toFixed(2);
-    printTotal.textContent = totalCost.toFixed(2);
-
     qtyDisplay.textContent = currentQty;
     const disc = getDiscount(currentQty);
     qtyDiscountDisplay.textContent = (disc * 100).toFixed(0) + '% Rabatt';
+
+    // Druck-Tabelle aktualisieren
+    updatePrintTable(plan, saved);
+  }
+
+  function updatePrintTable(plan, saved) {
+    printTerm.textContent = currentTerm + ' Monate';
+    printPrice.textContent = currentPriceType === 'net' ? 'Netto' : 'Brutto';
+    printFinal.textContent = includeFinal ? 'ja' : 'nein (vollgetilgt)';
+    printDown.textContent = plan.totalDown.toFixed(2) + ' €';
+    printQty.textContent = currentQty + ' Stück';
+    printDiscount.textContent = (plan.discount * 100).toFixed(0) + '% (€' + plan.savingsAmount.toFixed(2) + ' gespart)';
+    printMonthly.textContent = plan.monthly.toFixed(2) + ' €';
+    printFinalTotal.textContent = plan.final.toFixed(2) + ' €';
+    printTotal.textContent = plan.totalCost.toFixed(2) + ' €';
+    if (saved > 0.5 && currentDownAmount > getDownLimits(currentQty).min) {
+      printSavingMessage.style.display = 'block';
+      printSavingAmount.textContent = '€' + saved.toFixed(2);
+    } else {
+      printSavingMessage.style.display = 'none';
+    }
   }
 
   function updatePresetActiveState() {
@@ -605,7 +636,12 @@
       saveToLocalStorage();
     });
 
-    document.getElementById('printPdfBtn').addEventListener('click', () => window.print());
+    document.getElementById('printPdfBtn').addEventListener('click', () => {
+      const plan = computePlan();
+      const saved = computeSavings();
+      updatePrintTable(plan, saved);
+      window.print();
+    });
   }
 
   function saveToLocalStorage() {
